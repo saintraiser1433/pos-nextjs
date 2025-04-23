@@ -77,44 +77,45 @@ const data = {
   navMain: [
     {
       title: 'Dashboard',
-      url: '/product',
+      url: '/',
       icon: LayoutDashboard,
+      isActive: true,
       isCollapsible: false,
     },
     {
-      title: 'Inventory',
+      title: 'Products',
       url: '#',
       icon: PackageOpen,
-      // isActive: true,
+
       isCollapsible: true,
       items: [
         {
           title: 'Products',
-          url: '#',
+          url: '/product',
         },
         {
           title: 'Categories',
-          url: '#',
+          url: '/categories',
         },
         {
           title: 'Variations',
-          url: '#',
+          url: '/variations',
         },
         {
           title: 'Brands',
-          url: '#',
+          url: '/brands',
         },
         {
-          title: 'Units',
-          url: '#',
+          title: 'Sale Units',
+          url: '/sale-units',
         },
         {
           title: 'Base Units',
-          url: '#',
+          url: '/base-units',
         },
         {
           title: 'Print Barcode',
-          url: '#',
+          url: '/barcode',
         },
       ],
     },

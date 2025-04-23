@@ -1,5 +1,5 @@
-"use client";
-import { redirect } from "next/navigation";
+'use client';
+// import { redirect } from 'next/navigation';
 import {
   ColumnDef,
   flexRender,
@@ -11,9 +11,9 @@ import {
   SortingState,
   getSortedRowModel,
   VisibilityState,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 import {
   Table,
@@ -22,23 +22,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { DataTablePagination } from "@/components/datatable/dt-column-pagination";
-import * as React from "react";
-import { DataTableSearch } from "@/components/datatable/dt-search";
-import { DataTableColumnVisibility } from "@/components/datatable/dt-column-visibility";
-import { Button } from "@/components/ui/button";
-import { Box, Link } from "lucide-react";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/table';
+import { DataTablePagination } from '@/components/datatable/dt-column-pagination';
+import * as React from 'react';
+import { DataTableSearch } from '@/components/datatable/dt-search';
+import { DataTableColumnVisibility } from '@/components/datatable/dt-column-visibility';
+import { cn } from '@/lib/utils';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  children?:React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  children
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -64,26 +64,19 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <Card className={cn("py-2 gap-0")}>
-      <CardHeader className={cn("px-3")}>
-        <div className="flex items-center justify-between py-2">
-          <div className="flex items-center gap-2">
+    <Card className={cn('py-2 gap-0')}>
+      <CardHeader className={cn('px-2')}>
+        <div className='flex items-center justify-between py-1'>
+          <div className='flex items-center gap-2'>
             <DataTableSearch table={table} />
             <DataTableColumnVisibility table={table} />
           </div>
-
-          <Button
-            onClick={() => redirect("/product/create")}
-            className="cursor-pointer"
-            variant="outline"
-          >
-            <Box />
-            Create Product
-          </Button>
+          {children}
+          
         </div>
       </CardHeader>
-      <CardContent className={cn("px-3")}>
-        <div className="rounded-md border">
+      <CardContent className={cn('px-2')}>
+        <div className='rounded-md border'>
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -108,7 +101,7 @@ export function DataTable<TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
@@ -124,7 +117,7 @@ export function DataTable<TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className='h-24 text-center'
                   >
                     No results.
                   </TableCell>
@@ -133,7 +126,7 @@ export function DataTable<TData, TValue>({
             </TableBody>
           </Table>
         </div>
-        <div className="pt-2">
+        <div className='pt-2'>
           <DataTablePagination table={table} />
         </div>
       </CardContent>
