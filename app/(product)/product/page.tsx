@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 import { DataTable } from '@/components/datatable/data-table';
 import { columns } from './column';
@@ -36,7 +36,7 @@ async function getData(): Promise<Payment[]> {
   ];
 }
 
-export default async function Product() {
+const Product = async () => {
   const data = await getData();
 
   return (
@@ -51,4 +51,7 @@ export default async function Product() {
       </DataTable>
     </div>
   );
-}
+};
+
+
+export default Product
