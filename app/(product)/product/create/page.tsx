@@ -1,12 +1,12 @@
-'use client';
-import React from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { useRouter } from 'next/navigation'
-import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+"use client";
+import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormField,
@@ -14,53 +14,56 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
-import { ImageUp, SendHorizonal } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
-import Link from 'next/link';
-import { ComboBox } from '@/components/ui/combobox';
-
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { ImageUp, SendHorizonal } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
+import { ComboBox } from "@/components/ui/combobox";
+import { ToastContainer, toast } from "react-toastify";
+const toggleMe = () => {
+  toast.error("ok");
+};
 const formSchema = z.object({
   productName: z.string().min(2, {
-    message: 'Product name must be at least 2 characters.',
+    message: "Product name must be at least 2 characters.",
   }),
   barcode: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   productCategory: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   brand: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   barcodeSymbology: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   productUnit: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   warehouse: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   saleUnit: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   purchaseUnit: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   supplier: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   note: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   productType: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   status: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
 });
 
@@ -69,94 +72,93 @@ const onSubmit = (values: z.infer<typeof formSchema>) => {
 };
 const frameworks = [
   {
-    value: '1',
-    label: 'Next.js',
+    value: "1",
+    label: "Next.js",
   },
   {
-    value: '2',
-    label: 'SvelteKit',
+    value: "2",
+    label: "SvelteKit",
   },
   {
-    value: '3',
-    label: 'Nuxt.js',
+    value: "3",
+    label: "Nuxt.js",
   },
   {
-    value: '4',
-    label: 'Remix',
+    value: "4",
+    label: "Remix",
   },
   {
-    value: '5',
-    label: 'Astro',
+    value: "5",
+    label: "Astro",
   },
 ];
-const CreateProduct =() => {
-  const router = useRouter()
+const CreateProduct = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      productName: '',
+      productName: "",
     },
   });
-
 
   return (
     <Card>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-            <div className='grid grid-cols-12 gap-5'>
-              <div className='col-span-2 flex flex-col items-center gap-4'>
-                <div className='h-72 bg-card relative  border rounded-xl shadow-sm p-2 w-full'>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid grid-cols-12 gap-5">
+              <div className="col-span-2 flex flex-col items-center gap-4">
+                <div className="h-72 bg-card relative  border rounded-xl shadow-sm p-2 w-full">
                   <Image
-                    className='px-2'
-                    objectFit='fill'
-                    objectPosition='center'
+                    className="px-2"
+                    objectFit="fill"
+                    objectPosition="center"
                     fill={true}
-                    src='/images/no-image.png'
-                    alt='Picture of the author'
+                    src="/images/no-image.png"
+                    alt="Picture of the author"
                   />
                 </div>
-                <Button type='button' variant={'outline'}>
+                <Button type="button" variant={"outline"}>
                   <ImageUp />
                   Upload Image
                 </Button>
               </div>
 
-              <div className='col-span-10 grid grid-cols-12 gap-4'>
-                <div className='col-span-4'>
+              <div className="col-span-10 grid grid-cols-12 gap-4">
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='productName'
+                    name="productName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Product Name</FormLabel>
                         <FormControl>
-                          <Input placeholder='Enter product name' {...field} />
+                          <Input placeholder="Enter product name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='barcode'
+                    name="barcode"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>SKU (Barcode)</FormLabel>
                         <FormControl>
-                          <Input placeholder='Enter SKU Barcode' {...field} />
+                          <Input placeholder="Enter SKU Barcode" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='productCategory'
+                    name="productCategory"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Product Category</FormLabel>
@@ -170,90 +172,90 @@ const CreateProduct =() => {
                   />
                 </div>
 
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='brand'
+                    name="brand"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Brand Name</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='barcodeSymbology'
+                    name="barcodeSymbology"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Barcode Symbology</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='productUnit'
+                    name="productUnit"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Product Unit</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='saleUnit'
+                    name="saleUnit"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Sale Unit</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='purchaseUnit'
+                    name="purchaseUnit"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Purchase Unit</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='warehouse'
+                    name="warehouse"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Warehouse</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -261,63 +263,63 @@ const CreateProduct =() => {
                   />
                 </div>
 
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='supplier'
+                    name="supplier"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Supplier</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='status'
+                    name="status"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-4'>
+                <div className="col-span-4">
                   <FormField
                     control={form.control}
-                    name='productType'
+                    name="productType"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Product Type</FormLabel>
                         <FormControl>
-                          <Input placeholder='shadcn' {...field} />
+                          <Input placeholder="shadcn" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className='col-span-8'>
+                <div className="col-span-8">
                   <FormField
                     control={form.control}
-                    name='note'
+                    name="note"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Note</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={10}
-                            placeholder='Type your message here.'
-                            id='message'
+                            placeholder="Type your message here."
+                            id="message"
                           />
                         </FormControl>
                         <FormMessage />
@@ -327,13 +329,15 @@ const CreateProduct =() => {
                 </div>
               </div>
             </div>
-            <Separator className='my-4' />
-            <div className='flex gap-2 items-center'>
-              <Button variant='outline' type='submit'>
+            <Separator className="my-4" />
+            <div className="flex gap-2 items-center">
+              <Button variant="outline" type="submit">
                 <SendHorizonal />
                 Submit
               </Button>
-              <Button type='button' onClick={() => router.back()}>Back</Button>
+              <Button type="button" onClick={() => router.back()}>
+                Back
+              </Button>
             </div>
           </form>
         </Form>

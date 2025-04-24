@@ -18,7 +18,8 @@ import {
 import { Separator } from "@radix-ui/react-separator";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/theme-button";
-
+import { ToastContainer } from "react-toastify";
+import QueryProvider from "@/context/QueryProvider";
 const archivoSans = Archivo({
   variable: "--font-archivo-sans-serif",
   subsets: ["latin"],
@@ -41,8 +42,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | NextGen',
-    default: 'POS Nextgen'
+    template: "%s | NextGen",
+    default: "POS Nextgen",
   },
   description: "Generated Next Gen",
 };
@@ -94,8 +95,9 @@ export default function RootLayout({
                       Here's the list of product in Next POS Gen
                     </span>
                   </div>
+                  <QueryProvider>{children}</QueryProvider>
 
-                  {children}
+                  <ToastContainer />
                 </div>
               </SidebarInset>
             </SidebarProvider>
