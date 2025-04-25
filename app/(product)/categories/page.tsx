@@ -1,34 +1,56 @@
-"use client";
+'use client';
 
-import { DataTable } from "@/components/datatable/data-table";
-import { Button } from "@/components/ui/button";
-import { api } from "@/lib/api";
-import { getCategories } from "@/lib/test";
-import { ProductCategory } from "@/types/products/categories";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Box } from "lucide-react";
-import React from "react";
-import { toast } from "react-toastify";
-import { columns } from "./column";
-import Link from "next/link";
-
+import { DataTable } from '@/components/datatable/data-table';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useEffect, useState } from 'react';
+import { getColumns } from './column';
+import {
+  deleteCategories,
+  getCategories,
+  insertCategories,
+  updateCategories,
+} from '@/queries/productCategories';
+import DialogCategory from '@/components/product-category/dialog-category';
+import { ProductCategory } from '@/types/products/categories';
+import { toast } from 'react-toastify';
 const ProductCategories = () => {
+  const [isUpdate, setIsUpdate] = useState(false);
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({
-    queryKey: ["categories"],
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['categories'],
     queryFn: getCategories,
     retry: 1,
   });
+
+  const { mutateAsync: deleteCategory } = useMutation({
+    mutationFn: deleteCategories,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: (error) => {
+      toast.error(`Creation Failed : ${error.message}`);
+    },
+  });
+
+  const columns = getColumns(deleteCategory);
+
+  useEffect(() => {
+    //if fetch will error
+    if (isError) {
+      toast.error(`An error occurred : ${error.message}`);
+    }
+  });
+
   return (
-    <div className="">
-      <DataTable columns={columns} data={data ?? []}>
-        <Link href="/product/create">
-          <Button className="cursor-pointer" variant="outline">
-            <Box />
-            Create Category
-          </Button>
-        </Link>
-      </DataTable>
+    <div>
+      {isLoading ? (
+        <h1>Loading....</h1>
+      ) : (
+        <DataTable columns={columns} data={data ?? []}>
+          <DialogCategory isUpdate={isUpdate} />
+        </DataTable>
+      )}
     </div>
   );
 };
