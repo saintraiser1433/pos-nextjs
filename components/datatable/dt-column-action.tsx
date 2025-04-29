@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal, Copy, User, FileText, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import React from 'react'
 
 interface TableAction<TData> {
   label: string
@@ -41,10 +42,9 @@ export function DataTableActions<TData>({ row, actions }: TableActionsProps<TDat
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         
         {actions.map((action, index) => (
-          <>
+          <React.Fragment key={index}>
             {action.separatorBefore && <DropdownMenuSeparator />}
             <DropdownMenuItem
-              key={index}
               onClick={() => action.onClick(row.original)}
               className={cn(
                 'flex items-center gap-2',
@@ -54,7 +54,7 @@ export function DataTableActions<TData>({ row, actions }: TableActionsProps<TDat
               {action.icon && <action.icon className="h-4 w-4" />}
               {action.label}
             </DropdownMenuItem>
-          </>
+            </React.Fragment>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>

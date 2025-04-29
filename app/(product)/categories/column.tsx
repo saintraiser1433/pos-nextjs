@@ -6,9 +6,15 @@ import { ColumnDef } from '@tanstack/react-table';
 import { FileText, Trash2 } from 'lucide-react';
 import { DataTableActions } from '@/components/datatable/dt-column-action';
 import { ProductCategory } from '@/types/products/categories';
+import { ApiResponse } from '@/types/products';
 
 export const getColumns = (
-  deleteCategory: (id: number) => Promise<void>
+  deleteCategory: (id: number) => Promise<ApiResponse<void>>,
+  setCategories: React.Dispatch<
+    React.SetStateAction<Omit<ProductCategory, 'createdAt'>>
+  >,
+  setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
 ): ColumnDef<ProductCategory>[] => [
   {
     accessorKey: '#',
@@ -31,11 +37,17 @@ export const getColumns = (
         row={row}
         actions={[
           {
-            label: 'View details',
+            label: 'Edit Categories',
             icon: FileText,
             onClick: (category) => {
-                
-            }
+              setIsUpdate(true),
+                setCategories({
+                  id: category.id,
+                  name: category.name,
+                  status: category.status,
+                });
+              setOpen(true);
+            },
           },
           {
             label: 'Delete payment',

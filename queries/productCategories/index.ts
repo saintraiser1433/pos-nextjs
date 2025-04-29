@@ -14,26 +14,35 @@ export const getCategories = async (): Promise<ProductCategory[]> => {
 };
 
 
-export const insertCategories = async (data: Pick<ProductCategory, "name" | "status">) => {
-    await api.post<ApiResponse<ProductCategory>>("/product/category", data).then(function (response) {
-        return toast.success(response.data.message)
-    }).catch(function (error) {
-        return toast.error(error);
-    });
-}
+export const insertCategories = async (
+    data: Pick<ProductCategory, "name" | "status">
+): Promise<ApiResponse<ProductCategory>> => {  // Explicit return type
+    try {
+        const response = await api.post<ApiResponse<ProductCategory>>("/product/category", data);
+        return response.data;
+    } catch (error: any) {  // Type assertion for error
+        throw error.response?.data || error.message;
+    }
+};
 
-export const updateCategories = async (data: Pick<ProductCategory, "name" | "status">, id: number) => {
-    await api.post<ApiResponse<ProductCategory>>(`/product/category`, data).then(function (response) {
-        return toast.success(response.data.message)
-    }).catch(function (error) {
-        throw error;
-    });
-}
 
-export const deleteCategories = async (id: number) => {
-    await api.delete<ApiResponse<ProductCategory>>(`/product/category/${id}`).then(function (response) {
-        return toast.success(response.data.message)
-    }).catch(function (error) {
-        throw error;
-    });
-}
+export const updateCategories = async (
+    data: Pick<ProductCategory, "id" | "name" | "status">,
+): Promise<ApiResponse<ProductCategory>> => {  // Explicit return type
+    try {
+        const response = await api.put<ApiResponse<ProductCategory>>(`/product/category`, data);
+        return response.data;
+    } catch (error: any) {  // Type assertion for error
+        throw error.response?.data || error.message;
+    }
+};
+
+
+export const deleteCategories = async (id: number): Promise<ApiResponse<void>> => {
+    try {
+        const response = await api.delete<ApiResponse<void>>(`/product/category/${id}`);
+        return response.data;
+    } catch (error: any) {
+        throw error.response?.data || error.message;
+    }
+};
