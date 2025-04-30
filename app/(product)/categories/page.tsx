@@ -8,6 +8,7 @@ import { deleteCategories, getCategories } from '@/queries/productCategories';
 import DialogCategory from '@/components/product-category/dialog-category';
 import { ProductCategory } from '@/types/products/categories';
 import { toast } from 'react-toastify';
+import { AlertDialogDemo } from '@/components/alert-dialog';
 const initialCategory = {
   id: 0,
   name: '',
@@ -16,6 +17,9 @@ const initialCategory = {
 const ProductCategories = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] =
+    useState<ProductCategory | null>(null);
   const [categories, setCategories] =
     useState<Omit<ProductCategory, 'createdAt'>>(initialCategory);
   const queryClient = useQueryClient();
@@ -51,11 +55,19 @@ const ProductCategories = () => {
     },
   });
 
+  const handleDelete = async () => {
+    if (categoryToDelete) {
+      await deleteCategory(categoryToDelete.id);
+      setOpenAlert(false);
+    }
+  };
+
   const columns = getColumns(
-    deleteCategory,
+    setCategoryToDelete,
     setCategories,
     setIsUpdate,
-    setOpen
+    setOpen,
+    setOpenAlert
   );
 
   useEffect(() => {
@@ -69,15 +81,25 @@ const ProductCategories = () => {
       {isLoading ? (
         <h1>Loading....</h1>
       ) : (
-        <DataTable columns={columns} data={data ?? []}>
-          <DialogCategory
-            setIsUpdate={setIsUpdate}
-            open={open}
-            setOpen={setOpen}
-            isUpdate={isUpdate}
-            categories={categories}
-          />
-        </DataTable>
+        <>
+          {categoryToDelete && (
+            <AlertDialogDemo
+              open={openAlert}
+              setOpen={setOpenAlert}
+              onConfirm={handleDelete}
+              message={`Are you sure you want to delete "${categoryToDelete.name}"?`}
+            />
+          )}
+          <DataTable columns={columns} data={data ?? []}>
+            <DialogCategory
+              setIsUpdate={setIsUpdate}
+              open={open}
+              setOpen={setOpen}
+              isUpdate={isUpdate}
+              categories={categories}
+            />
+          </DataTable>
+        </>
       )}
     </div>
   );

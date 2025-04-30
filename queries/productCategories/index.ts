@@ -2,7 +2,6 @@ import { api } from "@/lib/api";
 import { ApiResponse } from "@/types/products";
 import { ProductCategory } from "@/types/products/categories";
 
-import { toast } from "react-toastify";
 export const getCategories = async (): Promise<ProductCategory[]> => {
     try {
         const { data } = await api.get<ProductCategory[]>("/product/category");

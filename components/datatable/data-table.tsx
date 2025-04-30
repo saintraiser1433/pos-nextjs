@@ -44,6 +44,8 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [rowSelection, setRowSelection] = React.useState({})
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const table = useReactTable({
@@ -56,15 +58,19 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
+      rowSelection,
     },
   });
 
   return (
+    <>
     <Card className={cn('py-2 gap-0')}>
+      
       <CardHeader className={cn('px-2')}>
         <div className='flex items-center justify-between py-1'>
           <div className='flex items-center gap-2'>
@@ -131,5 +137,6 @@ export function DataTable<TData, TValue>({
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -6,16 +6,41 @@ import { ColumnDef } from '@tanstack/react-table';
 import { FileText, Trash2 } from 'lucide-react';
 import { DataTableActions } from '@/components/datatable/dt-column-action';
 import { ProductCategory } from '@/types/products/categories';
-import { ApiResponse } from '@/types/products';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export const getColumns = (
-  deleteCategory: (id: number) => Promise<ApiResponse<void>>,
+  setCategoryToDelete: React.Dispatch<
+    React.SetStateAction<ProductCategory | null>
+  >,
   setCategories: React.Dispatch<
     React.SetStateAction<Omit<ProductCategory, 'createdAt'>>
   >,
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
 ): ColumnDef<ProductCategory>[] => [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: '#',
     cell: ({ row }) => <span>{row.index + 1}</span>,
@@ -54,7 +79,8 @@ export const getColumns = (
             icon: Trash2,
             destructive: true,
             onClick: async (category) => {
-              await deleteCategory(category.id);
+              setCategoryToDelete(category)
+              setOpenAlert(true)
             },
             separatorBefore: true,
           },
