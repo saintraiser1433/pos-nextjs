@@ -1,4 +1,6 @@
 export const DEFAULT_FORM_PRODUCT_CATEGORY = {
-  name: '',
-  status: true,
+    id: 0,
+    name: '',
+    status: true,
 };
+

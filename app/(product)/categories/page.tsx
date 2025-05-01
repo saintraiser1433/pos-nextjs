@@ -1,63 +1,41 @@
 'use client';
 
 import { DataTable } from '@/components/datatable/data-table';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { getColumns } from './column';
-import { deleteCategories, getCategories } from '@/queries/productCategories';
-import DialogCategory from '@/components/product-category/dialog-category';
 import { ProductCategory } from '@/types/products/categories';
-import { toast } from 'react-toastify';
 import { AlertDialogDemo } from '@/components/alert-dialog';
-const initialCategory = {
-  id: 0,
-  name: '',
-  status: true,
-};
+import { getColumns } from '@/features/product/categories/components/CategoryColumn';
+import { useCategoryMutations } from '@/features/product/categories/hooks/useCategoryMutations';
+import { useCategoryQueries } from '@/features/product/categories/hooks/useCategoryQueries';
+import { useQueryClient } from '@tanstack/react-query';
+import CategoryForm from '@/features/product/categories/components/CategoryForm';
+import { DEFAULT_FORM_PRODUCT_CATEGORY } from '@/features/product/categories/constants';
+import { PartialProductCategory } from '@/features/product/categories/types';
+import { useToast } from '@/hooks/useToast';
+
 const ProductCategories = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [categoryToDelete, setCategoryToDelete] =
     useState<ProductCategory | null>(null);
-  const [categories, setCategories] =
-    useState<Omit<ProductCategory, 'createdAt'>>(initialCategory);
+  const [categories, setCategories] = useState<PartialProductCategory>(
+    DEFAULT_FORM_PRODUCT_CATEGORY
+  );
+  const [toastHook] = useToast();
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['categories'],
-    queryFn: getCategories,
-    retry: 1,
+  const { deleteCategory } = useCategoryMutations({
+    queryClient,
   });
+  const { getAllCategory } = useCategoryQueries();
 
-  const { mutateAsync: deleteCategory } = useMutation({
-    mutationFn: deleteCategories,
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ['categories'] });
-      const previousCategories = queryClient.getQueryData(['categories']);
-      queryClient.setQueryData<ProductCategory[]>(['categories'], (old) =>
-        old?.filter((item) => item.id !== id)
-      );
-
-      return { previousCategories };
-    },
-    onError: (error, _, context) => {
-      if (context?.previousCategories) {
-        queryClient.setQueryData(['categories'], context.previousCategories);
-      }
-      toast.error(`Deletion Failed : ${error.message}`);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-    },
-    onSuccess: (response) => {
-      toast.success(response.message);
-    },
-  });
+  const { data, isLoading, isError, error } = getAllCategory();
+  const { mutateAsync: deletes } = deleteCategory();
 
   const handleDelete = async () => {
     if (categoryToDelete) {
-      await deleteCategory(categoryToDelete.id);
+      await deletes(categoryToDelete.id);
       setOpenAlert(false);
     }
   };
@@ -72,7 +50,7 @@ const ProductCategories = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error(`An error occurred : ${error.message}`);
+      toastHook('error', error.message);
     }
   }, [isError, error]);
 
@@ -91,7 +69,7 @@ const ProductCategories = () => {
             />
           )}
           <DataTable columns={columns} data={data ?? []}>
-            <DialogCategory
+            <CategoryForm
               setIsUpdate={setIsUpdate}
               open={open}
               setOpen={setOpen}

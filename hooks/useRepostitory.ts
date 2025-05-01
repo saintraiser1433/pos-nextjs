@@ -35,7 +35,7 @@ import axios, {
       });
   
       if (repositoryConfig?.onRequest) {
-        instance.interceptors.request.use(repositoryConfig.onRequest);
+        instance.interceptors.request.use(repositoryConfig.onRequest as (config: any) => any);
       }
   
       if (repositoryConfig?.onResponse) {

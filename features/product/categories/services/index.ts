@@ -19,7 +19,7 @@ export const insertCategories = async (
     try {
         const response = await api.post<ApiResponse<ProductCategory>>("/product/category", data);
         return response.data;
-    } catch (error: any) {  // Type assertion for error
+    } catch (error: any) {      
         throw error.response?.data || error.message;
     }
 };

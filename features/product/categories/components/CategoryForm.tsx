@@ -1,42 +1,36 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-import { Button } from '../ui/button';
 import { Input } from '@/components/ui/input';
 import { Box, Loader2 } from 'lucide-react';
-import { Separator } from '../ui/separator';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { ProductCategory } from '@/types/products/categories';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  insertCategories,
-  updateCategories,
-} from '@/queries/productCategories';
-import { toast } from 'react-toastify';
-import { Switch } from '../ui/switch';
-import { ApiResponse } from '@/types/products';
-import { DEFAULT_FORM_PRODUCT_CATEGORY } from '@/constants';
+import { useQueryClient } from '@tanstack/react-query';
 
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+import { useCategoryMutations } from '../hooks/useCategoryMutations';
+import { PartialProductCategory } from '../types';
+import { DEFAULT_FORM_PRODUCT_CATEGORY } from '../constants';
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -48,12 +42,12 @@ const formSchema = z.object({
 type DialogProps = {
   isUpdate: boolean;
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
-  categories: Omit<ProductCategory, 'createdAt'>;
+  categories: PartialProductCategory;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 };
 
-const DialogCategory = ({
+const CategoryForm = ({
   isUpdate,
   categories,
   setOpen,
@@ -61,6 +55,10 @@ const DialogCategory = ({
   setIsUpdate,
 }: DialogProps) => {
   const queryClient = useQueryClient();
+  const { insertCategory, updateCategory } = useCategoryMutations({
+    queryClient,
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
@@ -69,100 +67,23 @@ const DialogCategory = ({
     },
   });
 
-  const { mutateAsync: addCategories, isPending: addIsPending } = useMutation<
-    ApiResponse<ProductCategory>,
-    Error,
-    Pick<ProductCategory, 'name' | 'status'>,
-    {
-      previousCategories?: Pick<ProductCategory, 'name' | 'status'>[];
-    }
-  >({
-    mutationFn: insertCategories,
-    onMutate: async (newCategory) => {
-      await queryClient.cancelQueries({ queryKey: ['categories'] });
-      const previousCategories = queryClient.getQueryData<
-        Pick<ProductCategory, 'name' | 'status'>[]
-      >(['categories']);
-      queryClient.setQueryData<Pick<ProductCategory, 'name' | 'status'>[]>(
-        ['categories'],
-        (old = []) => [newCategory, ...old]
-      );
-      return { previousCategories };
-    },
-    onError: (error, _, context) => {
-      if (context?.previousCategories) {
-        queryClient.setQueryData(['categories'], context.previousCategories);
-      }
-      toast.error(`Creation Failed: ${error.message}`);
-    },
-    onSuccess: (response) => {
-      toast.success(response?.message);
-      resetForm(false);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-    },
-  });
-
-  const { mutateAsync: updateCategory, isPending: updateIsPending } =
-    useMutation<
-      ApiResponse<ProductCategory>,
-      Error,
-      Pick<ProductCategory, 'id' | 'name' | 'status'>,
-      {
-        previousCategory?: ProductCategory;
-        newCategory: Omit<ProductCategory, 'createdAt'>;
-      }
-    >({
-      mutationFn: updateCategories,
-      onMutate: async (newCategory) => {
-        await queryClient.cancelQueries({
-          queryKey: ['categories', newCategory.id],
-        });
-
-        const previousCategory = queryClient.getQueryData<ProductCategory>([
-          'categories',
-          newCategory.id,
-        ]);
-
-        queryClient.setQueryData<ProductCategory[]>(['categories'], (old) =>
-          old?.map((cat) =>
-            cat.id === newCategory.id ? { ...cat, ...newCategory } : cat
-          )
-        );
-
-        return { previousCategory, newCategory };
-      },
-      onError: (error, _, context) => {
-        if (context?.previousCategory) {
-          queryClient.setQueryData(
-            ['categories', context.newCategory.id],
-            context.previousCategory
-          );
-        }
-        toast.error(`Update Failed: ${error.message}`);
-      },
-      onSuccess: (response) => {
-        toast.success(response?.message);
-        resetForm(false);
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ['categories'] });
-      },
-    });
+  const { mutateAsync: add, isPending: addIsPending } = insertCategory();
+  const { mutateAsync: update, isPending: updateIsPending } = updateCategory();
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (isUpdate) {
-      await updateCategory({ ...data, id: categories.id });
+      await update({ ...data, id: categories.id });
+      resetForm(false);
     } else {
-      await addCategories(data);
+      await add(data);
+      resetForm(false);
     }
   };
 
-  const resetForm = (open:boolean) => {
+  const resetForm = (isOpen: boolean) => {
     form.reset(DEFAULT_FORM_PRODUCT_CATEGORY);
     setIsUpdate(false);
-    setOpen(open);
+    setOpen(isOpen);
   };
 
   return (
@@ -248,4 +169,4 @@ const DialogCategory = ({
   );
 };
 
-export default DialogCategory;
+export default CategoryForm;
