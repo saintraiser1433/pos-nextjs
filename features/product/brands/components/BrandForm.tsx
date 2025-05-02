@@ -22,17 +22,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { useCategoryMutations } from '../hooks/useCategoryMutations';
-import { PartialProductCategory } from '../types';
-import { DEFAULT_FORM_PRODUCT_CATEGORY } from '../constants';
+
+import { useBrandMutations } from '../hooks/useBrandMutations';
+import { DEFAULT_FORM_PRODUCT_BRAND } from '../constants';
+import { PartialProductBrand } from '../types';
 
 const formSchema = z.object({
   name: z.string().min(3, {
-    message: 'Product category must be at least 3 characters.',
+    message: 'Product Brand must be at least 3 characters.',
   }),
   status: z.boolean().default(true).optional(),
 });
@@ -40,37 +42,36 @@ const formSchema = z.object({
 type DialogProps = {
   isUpdate: boolean;
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
-  categories: PartialProductCategory;
+  brand: PartialProductBrand;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 };
 
-const CategoryForm = ({
+const BrandForm = ({
   isUpdate,
-  categories,
+  brand,
   setOpen,
   open,
   setIsUpdate,
 }: DialogProps) => {
   const queryClient = useQueryClient();
-  const { insertCategory, updateCategory } = useCategoryMutations({
+  const { insertProductBrand, updateProductBrand } = useBrandMutations({
     queryClient,
   });
 
+  const { mutateAsync: add, isPending: addIsPending } = insertProductBrand;
+  const { mutateAsync: update, isPending: updateIsPending } =
+    updateProductBrand;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      name: categories.name,
-      status: categories.status,
+      name: brand.name,
+      status: brand.status,
     },
   });
-
-  const { mutateAsync: add, isPending: addIsPending } = insertCategory;
-  const { mutateAsync: update, isPending: updateIsPending } = updateCategory;
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (isUpdate) {
-      await update({ ...data, id: categories.id });
+      await update({ ...data, id: brand.id });
       resetForm(false);
     } else {
       await add(data);
@@ -79,7 +80,7 @@ const CategoryForm = ({
   };
 
   const resetForm = (isOpen: boolean) => {
-    form.reset(DEFAULT_FORM_PRODUCT_CATEGORY);
+    form.reset(DEFAULT_FORM_PRODUCT_BRAND);
     setIsUpdate(false);
     setOpen(isOpen);
   };
@@ -94,12 +95,12 @@ const CategoryForm = ({
           variant='outline'
         >
           <Box />
-          Create Category
+          Create Brand
         </Button>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Product Category</DialogTitle>
-            <DialogDescription>Please enter category</DialogDescription>
+            <DialogTitle>Product Brand</DialogTitle>
+            <DialogDescription>Please enter Brand</DialogDescription>
           </DialogHeader>
           <Separator />
           <Form {...form}>
@@ -110,9 +111,9 @@ const CategoryForm = ({
                   name='name'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category Name</FormLabel>
+                      <FormLabel>Brand Name</FormLabel>
                       <FormControl>
-                        <Input placeholder='Enter category' {...field} />
+                        <Input placeholder='Enter Brand' {...field} />
                       </FormControl>
                       <FormMessage></FormMessage>
                     </FormItem>
@@ -167,4 +168,4 @@ const CategoryForm = ({
   );
 };
 
-export default CategoryForm;
+export default BrandForm;

@@ -25,7 +25,7 @@ export const useToast = () => {
     }
 
 
-    return [toastHook]
+    return toastHook;
 
 
 

@@ -4,20 +4,19 @@ import { DataTableColumnHeader } from '@/components/datatable/dt-column-header';
 import { ColumnDef } from '@tanstack/react-table';
 import { FileText, Trash2 } from 'lucide-react';
 import { DataTableActions } from '@/components/datatable/dt-column-action';
-import { ProductCategory } from '@/types/products/categories';
 import { Checkbox } from '@/components/ui/checkbox';
-import { PartialProductCategory } from '../types';
 import { Badge } from '@/components/ui/badge';
+import { PartialProductVariant, ProductVariant } from '../types';
 
-export const getCategoryColumns = (
-  setCategoryToDelete: React.Dispatch<
-    React.SetStateAction<ProductCategory | null>
+export const getVariantColumns = (
+  setVariantToDelete: React.Dispatch<
+    React.SetStateAction<ProductVariant | null>
   >,
-  setCategories: React.Dispatch<React.SetStateAction<PartialProductCategory>>,
+  setVariant: React.Dispatch<React.SetStateAction<PartialProductVariant>>,
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
-): ColumnDef<ProductCategory>[] => [
+): ColumnDef<ProductVariant>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -49,40 +48,52 @@ export const getCategoryColumns = (
     header: 'Name',
   },
   {
+    accessorKey: 'type',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Variant Type' />
+    ),
+  },
+  {
     accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const status = row.getValue("status");
-      return <Badge variant={status ? "default" : "outline"}> {status ? "Active" : "Inactive"} </Badge>;
+      const status = row.getValue('status');
+      return (
+        <Badge variant={status ? 'default' : 'outline'}>
+          {' '}
+          {status ? 'Active' : 'Inactive'}{' '}
+        </Badge>
+      );
     },
   },
   {
     id: 'actions',
     cell: ({ row }) => (
-      <DataTableActions<ProductCategory>
+      <DataTableActions<ProductVariant>
         row={row}
         actions={[
           {
-            label: 'Edit Categories',
+            label: 'Edit Variant',
             icon: FileText,
-            onClick: (category) => {
+            onClick: (variant) => {
               setIsUpdate(true),
-                setCategories({
-                  id: category.id,
-                  name: category.name,
-                  status: category.status,
+                setVariant({
+                  id: variant.id,
+                  name: variant.name,
+                  type: variant.type,
+                  status: variant.status,
                 });
               setOpen(true);
             },
           },
           {
-            label: 'Delete category',
+            label: 'Delete Variant',
             icon: Trash2,
             destructive: true,
-            onClick: async (category) => {
-              setCategoryToDelete(category);
+            onClick: async (variant) => {
+              setVariantToDelete(variant);
               setOpenAlert(true);
             },
             separatorBefore: true,

@@ -106,8 +106,8 @@ const data = {
           url: '/brands',
         },
         {
-          title: 'Sale Units',
-          url: '/sale-units',
+          title: 'Units',
+          url: '/units',
         },
         {
           title: 'Base Units',

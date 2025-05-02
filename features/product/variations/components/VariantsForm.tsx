@@ -26,13 +26,16 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { useCategoryMutations } from '../hooks/useCategoryMutations';
-import { PartialProductCategory } from '../types';
-import { DEFAULT_FORM_PRODUCT_CATEGORY } from '../constants';
+import { PartialProductVariant } from '../types';
+import { useVariantMutations } from '../hooks/useVariantMutations';
+import { DEFAULT_FORM_PRODUCT_VARIANTS } from '../constants';
 
 const formSchema = z.object({
-  name: z.string().min(3, {
-    message: 'Product category must be at least 3 characters.',
+  name: z.string().min(1, {
+    message: 'Product Variant Name is required',
+  }),
+  type: z.string().min(1, {
+    message: 'Product category is required',
   }),
   status: z.boolean().default(true).optional(),
 });
@@ -40,37 +43,38 @@ const formSchema = z.object({
 type DialogProps = {
   isUpdate: boolean;
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
-  categories: PartialProductCategory;
+  variant: PartialProductVariant;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 };
 
-const CategoryForm = ({
+const VariantForm = ({
   isUpdate,
-  categories,
+  variant,
   setOpen,
   open,
   setIsUpdate,
 }: DialogProps) => {
   const queryClient = useQueryClient();
-  const { insertCategory, updateCategory } = useCategoryMutations({
+  const { insertVariant, updateVariant } = useVariantMutations({
     queryClient,
   });
+
+  const { mutateAsync: add, isPending: addIsPending } = insertVariant;
+  const { mutateAsync: update, isPending: updateIsPending } = updateVariant;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      name: categories.name,
-      status: categories.status,
+      type: variant.type,
+      name: variant.name,
+      status: variant.status,
     },
   });
 
-  const { mutateAsync: add, isPending: addIsPending } = insertCategory;
-  const { mutateAsync: update, isPending: updateIsPending } = updateCategory;
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (isUpdate) {
-      await update({ ...data, id: categories.id });
+      await update({ ...data, id: variant.id });
       resetForm(false);
     } else {
       await add(data);
@@ -79,7 +83,7 @@ const CategoryForm = ({
   };
 
   const resetForm = (isOpen: boolean) => {
-    form.reset(DEFAULT_FORM_PRODUCT_CATEGORY);
+    form.reset(DEFAULT_FORM_PRODUCT_VARIANTS);
     setIsUpdate(false);
     setOpen(isOpen);
   };
@@ -94,12 +98,12 @@ const CategoryForm = ({
           variant='outline'
         >
           <Box />
-          Create Category
+          Create Variant
         </Button>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Product Category</DialogTitle>
-            <DialogDescription>Please enter category</DialogDescription>
+            <DialogTitle>Product Variant</DialogTitle>
+            <DialogDescription>Please enter Variant Type</DialogDescription>
           </DialogHeader>
           <Separator />
           <Form {...form}>
@@ -110,9 +114,22 @@ const CategoryForm = ({
                   name='name'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category Name</FormLabel>
+                      <FormLabel>Variant Name</FormLabel>
                       <FormControl>
-                        <Input placeholder='Enter category' {...field} />
+                        <Input placeholder='Enter Variant Name' {...field} />
+                      </FormControl>
+                      <FormMessage></FormMessage>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='type'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Variant Type</FormLabel>
+                      <FormControl>
+                        <Input placeholder='Enter Variant Type' {...field} />
                       </FormControl>
                       <FormMessage></FormMessage>
                     </FormItem>
@@ -167,4 +184,4 @@ const CategoryForm = ({
   );
 };
 
-export default CategoryForm;
+export default VariantForm;

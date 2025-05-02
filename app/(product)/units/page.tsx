@@ -9,19 +9,19 @@ import { useCategoryMutations } from '@/features/product/categories/hooks/useCat
 import { useCategoryQueries } from '@/features/product/categories/hooks/useCategoryQueries';
 import { useQueryClient } from '@tanstack/react-query';
 import CategoryForm from '@/features/product/categories/components/CategoryForm';
-import { DEFAULT_FORM_PRODUCT_CATEGORY } from '@/features/product/categories/constants';
-import { PartialProductCategory } from '@/features/product/categories/types';
 import { useToast } from '@/hooks/useToast';
 import { useGlobal } from '@/context/GlobalProvider';
+import { PartialProductUnit, ProductUnit } from '@/features/product/units/types';
+import { DEFAULT_FORM_PRODUCT_UNITS } from '@/features/product/units/constants';
 
-const ProductCategories = () => {
+const ProductUnits = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [categoryToDelete, setCategoryToDelete] =
-    useState<ProductCategory | null>(null);
-  const [categories, setCategories] = useState<PartialProductCategory>(
-    DEFAULT_FORM_PRODUCT_CATEGORY
+    useState<ProductUnit | null>(null);
+  const [categories, setCategories] = useState<PartialProductUnit>(
+    DEFAULT_FORM_PRODUCT_UNITS
   );
   const global = useGlobal();
   const toast = useToast();
@@ -93,4 +93,4 @@ const ProductCategories = () => {
   );
 };
 
-export default ProductCategories;
+export default ProductUnits;

@@ -4,20 +4,17 @@ import { DataTableColumnHeader } from '@/components/datatable/dt-column-header';
 import { ColumnDef } from '@tanstack/react-table';
 import { FileText, Trash2 } from 'lucide-react';
 import { DataTableActions } from '@/components/datatable/dt-column-action';
-import { ProductCategory } from '@/types/products/categories';
 import { Checkbox } from '@/components/ui/checkbox';
-import { PartialProductCategory } from '../types';
 import { Badge } from '@/components/ui/badge';
+import { PartialProductBrand, ProductBrand } from '../types';
 
-export const getCategoryColumns = (
-  setCategoryToDelete: React.Dispatch<
-    React.SetStateAction<ProductCategory | null>
-  >,
-  setCategories: React.Dispatch<React.SetStateAction<PartialProductCategory>>,
+export const getBrandColumns = (
+  setBrandToDelete: React.Dispatch<React.SetStateAction<ProductBrand | null>>,
+  setBrand: React.Dispatch<React.SetStateAction<PartialProductBrand>>,
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
-): ColumnDef<ProductCategory>[] => [
+): ColumnDef<ProductBrand>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -54,22 +51,27 @@ export const getCategoryColumns = (
       <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const status = row.getValue("status");
-      return <Badge variant={status ? "default" : "outline"}> {status ? "Active" : "Inactive"} </Badge>;
+      const status = row.getValue('status');
+      return (
+        <Badge variant={status ? 'default' : 'outline'}>
+          {' '}
+          {status ? 'Active' : 'Inactive'}{' '}
+        </Badge>
+      );
     },
   },
   {
     id: 'actions',
     cell: ({ row }) => (
-      <DataTableActions<ProductCategory>
+      <DataTableActions<ProductBrand>
         row={row}
         actions={[
           {
-            label: 'Edit Categories',
+            label: 'Edit Brand',
             icon: FileText,
             onClick: (category) => {
               setIsUpdate(true),
-                setCategories({
+                setBrand({
                   id: category.id,
                   name: category.name,
                   status: category.status,
@@ -78,11 +80,11 @@ export const getCategoryColumns = (
             },
           },
           {
-            label: 'Delete category',
+            label: 'Delete brand',
             icon: Trash2,
             destructive: true,
             onClick: async (category) => {
-              setCategoryToDelete(category);
+              setBrandToDelete(category);
               setOpenAlert(true);
             },
             separatorBefore: true,

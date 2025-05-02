@@ -26,13 +26,19 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { useCategoryMutations } from '../hooks/useCategoryMutations';
-import { PartialProductCategory } from '../types';
-import { DEFAULT_FORM_PRODUCT_CATEGORY } from '../constants';
+import { PartialProductUnit } from '../types';
+import { useUnitMutations } from '../hooks/useVariantMutations';
+import { DEFAULT_FORM_PRODUCT_UNITS } from '../constants';
 
 const formSchema = z.object({
-  name: z.string().min(3, {
-    message: 'Product category must be at least 3 characters.',
+  name: z.string().min(1, {
+    message: 'Product Variant Name is required',
+  }),
+  shortName: z.string().min(1, {
+    message: 'Short Name is required',
+  }),
+  baseUnit: z.string().min(1, {
+    message: 'Base Unit is required',
   }),
   status: z.boolean().default(true).optional(),
 });
@@ -40,37 +46,39 @@ const formSchema = z.object({
 type DialogProps = {
   isUpdate: boolean;
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
-  categories: PartialProductCategory;
+  unit: PartialProductUnit;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 };
 
-const CategoryForm = ({
+const UnitForm = ({
   isUpdate,
-  categories,
+  unit,
   setOpen,
   open,
   setIsUpdate,
 }: DialogProps) => {
   const queryClient = useQueryClient();
-  const { insertCategory, updateCategory } = useCategoryMutations({
+  const { insertUnit, updateUnit } = useUnitMutations({
     queryClient,
   });
+
+  const { mutateAsync: add, isPending: addIsPending } = insertUnit;
+  const { mutateAsync: update, isPending: updateIsPending } = updateUnit;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      name: categories.name,
-      status: categories.status,
+      name: unit.name,
+      shortName: unit.name,
+      baseUnit: unit.baseUnit,
+      status: unit.status,
     },
   });
 
-  const { mutateAsync: add, isPending: addIsPending } = insertCategory;
-  const { mutateAsync: update, isPending: updateIsPending } = updateCategory;
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (isUpdate) {
-      await update({ ...data, id: categories.id });
+      await update({ ...data, id: unit.id });
       resetForm(false);
     } else {
       await add(data);
@@ -79,7 +87,7 @@ const CategoryForm = ({
   };
 
   const resetForm = (isOpen: boolean) => {
-    form.reset(DEFAULT_FORM_PRODUCT_CATEGORY);
+    form.reset(DEFAULT_FORM_PRODUCT_UNITS);
     setIsUpdate(false);
     setOpen(isOpen);
   };
@@ -94,12 +102,12 @@ const CategoryForm = ({
           variant='outline'
         >
           <Box />
-          Create Category
+          Create Unit
         </Button>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Product Category</DialogTitle>
-            <DialogDescription>Please enter category</DialogDescription>
+            <DialogTitle>Product Unit</DialogTitle>
+            <DialogDescription>Please enter Variant Type</DialogDescription>
           </DialogHeader>
           <Separator />
           <Form {...form}>
@@ -110,9 +118,44 @@ const CategoryForm = ({
                   name='name'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category Name</FormLabel>
+                      <FormLabel>Variant Type</FormLabel>
                       <FormControl>
-                        <Input placeholder='Enter category' {...field} />
+                        <Input placeholder='Enter Variant Name' {...field} />
+                      </FormControl>
+                      <FormMessage></FormMessage>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='shortName'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Variant Type</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder='Enter Short Name'
+                          {...field}
+                          required
+                        />
+                      </FormControl>
+                      <FormMessage></FormMessage>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='baseUnit'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Base Unit</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder='Enter Base Unit'
+                          {...field}
+                          required
+                        />
                       </FormControl>
                       <FormMessage></FormMessage>
                     </FormItem>
@@ -167,4 +210,4 @@ const CategoryForm = ({
   );
 };
 
-export default CategoryForm;
+export default UnitForm;
