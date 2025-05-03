@@ -5,16 +5,17 @@ import { ColumnDef } from "@tanstack/react-table";
 import { FileText, Trash2 } from "lucide-react";
 import { DataTableActions } from "@/components/datatable/dt-column-action";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { PartialProductUnit, ProductUnit } from "../types";
+import { PartialProductBaseUnit, ProductBaseUnit } from "../types";
 
-export const getUnitsColumns = (
-  setUnitsToDelete: React.Dispatch<React.SetStateAction<ProductUnit | null>>,
-  setUnits: React.Dispatch<React.SetStateAction<PartialProductUnit>>,
+export const getBaseUnitsColumns = (
+  setBaseUnitToDelete: React.Dispatch<
+    React.SetStateAction<ProductBaseUnit | null>
+  >,
+  setBaseUnit: React.Dispatch<React.SetStateAction<PartialProductBaseUnit>>,
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
-): ColumnDef<ProductUnit>[] => [
+): ColumnDef<ProductBaseUnit>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -46,53 +47,26 @@ export const getUnitsColumns = (
     header: "Name",
   },
   {
-    accessorKey: "shortName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Short Name" />
-    ),
-  },
-  {
-    accessorKey: "baseUnit",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Base Unit" />
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-    cell: ({ row }) => {
-      const status = row.getValue("status");
-      return (
-        <Badge variant={status ? "default" : "outline"}>
-          {" "}
-          {status ? "Active" : "Inactive"}{" "}
-        </Badge>
-      );
-    },
-  },
-  {
     id: "actions",
     cell: ({ row }) => (
-      <DataTableActions<ProductUnit>
+      <DataTableActions<ProductBaseUnit>
         row={row}
         actions={[
           {
-            label: "Edit Unit",
+            label: "Edit Base Unit",
             icon: FileText,
             onClick: (unit) => {
               setIsUpdate(true);
-              setUnits(unit);
+              setBaseUnit(unit);
               setOpen(true);
             },
           },
           {
-            label: "Delete Unit",
+            label: "Delete Base Unit",
             icon: Trash2,
             destructive: true,
             onClick: async (unit) => {
-              setUnitsToDelete(unit);
+              setBaseUnitToDelete(unit);
               setOpenAlert(true);
             },
             separatorBefore: true,

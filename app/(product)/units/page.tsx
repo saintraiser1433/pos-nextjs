@@ -1,50 +1,54 @@
-'use client';
+"use client";
 
-import { DataTable } from '@/components/datatable/data-table';
-import React, { useEffect, useState } from 'react';
-import { ProductCategory } from '@/types/products/categories';
-import { AlertDialogDemo } from '@/components/alert-dialog';
-import { getCategoryColumns } from '@/features/product/categories/components/CategoryColumn';
-import { useCategoryMutations } from '@/features/product/categories/hooks/useCategoryMutations';
-import { useCategoryQueries } from '@/features/product/categories/hooks/useCategoryQueries';
-import { useQueryClient } from '@tanstack/react-query';
-import CategoryForm from '@/features/product/categories/components/CategoryForm';
-import { useToast } from '@/hooks/useToast';
-import { useGlobal } from '@/context/GlobalProvider';
-import { PartialProductUnit, ProductUnit } from '@/features/product/units/types';
-import { DEFAULT_FORM_PRODUCT_UNITS } from '@/features/product/units/constants';
+import { DataTable } from "@/components/datatable/data-table";
+import React, { useEffect, useState } from "react";
+import { AlertDialogDemo } from "@/components/alert-dialog";
+import { useCategoryMutations } from "@/features/product/categories/hooks/useCategoryMutations";
+import { useCategoryQueries } from "@/features/product/categories/hooks/useCategoryQueries";
+import { useQueryClient } from "@tanstack/react-query";
+import CategoryForm from "@/features/product/categories/components/CategoryForm";
+import { useToast } from "@/hooks/useToast";
+import { useGlobal } from "@/context/GlobalProvider";
+import {
+  PartialProductUnit,
+  ProductUnit,
+} from "@/features/product/units/types";
+import { DEFAULT_FORM_PRODUCT_UNITS } from "@/features/product/units/constants";
+import { getUnitsColumns } from "@/features/product/units/components/UnitsColumn";
+import UnitForm from "@/features/product/units/components/UnitsForm";
+import { useUnitMutations } from "@/features/product/units/hooks/useVariantMutations";
+import { useUnitQueries } from "@/features/product/units/hooks/useVariantQueries";
 
 const ProductUnits = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] =
-    useState<ProductUnit | null>(null);
-  const [categories, setCategories] = useState<PartialProductUnit>(
+  const [unitsToDelete, setUnitsToDelete] = useState<ProductUnit | null>(null);
+  const [units, setUnits] = useState<PartialProductUnit>(
     DEFAULT_FORM_PRODUCT_UNITS
   );
   const global = useGlobal();
   const toast = useToast();
   const queryClient = useQueryClient();
 
-  const { deleteCategory } = useCategoryMutations({
+  const { deleteUnit } = useUnitMutations({
     queryClient,
   });
-  const { getAllCategory } = useCategoryQueries();
+  const { getAllUnit } = useUnitQueries();
 
-  const { data, isLoading, isError, error } = getAllCategory;
-  const { mutateAsync: deletes } = deleteCategory;
+  const { data, isLoading, isError, error } = getAllUnit;
+  const { mutateAsync: deletes } = deleteUnit;
 
   const handleDelete = async () => {
-    if (categoryToDelete) {
-      await deletes(categoryToDelete.id);
+    if (unitsToDelete) {
+      await deletes(unitsToDelete.id);
       setOpenAlert(false);
     }
   };
 
-  const columns = getCategoryColumns(
-    setCategoryToDelete,
-    setCategories,
+  const columns = getUnitsColumns(
+    setUnitsToDelete,
+    setUnits,
     setIsUpdate,
     setOpen,
     setOpenAlert
@@ -52,14 +56,14 @@ const ProductUnits = () => {
 
   useEffect(() => {
     if (isError) {
-      toast('error', error.message);
+      toast("error", error.message);
     }
   }, [isError, error]);
 
   useEffect(() => {
-    if (global.state?.title !== 'Product Categories') {
+    if (global.state?.title !== "Product Unit") {
       global.setState({
-        title: 'Product Categories',
+        title: "Product Unit",
       });
     }
   }, [global.state?.title]);
@@ -70,21 +74,21 @@ const ProductUnits = () => {
         <h1>Loading....</h1>
       ) : (
         <>
-          {categoryToDelete && (
+          {unitsToDelete && (
             <AlertDialogDemo
               open={openAlert}
               setOpen={setOpenAlert}
               onConfirm={handleDelete}
-              message={`Are you sure you want to delete "${categoryToDelete.name}"?`}
+              message={`Are you sure you want to delete "${unitsToDelete.name}"?`}
             />
           )}
           <DataTable columns={columns} data={data ?? []}>
-            <CategoryForm
+            <UnitForm
               setIsUpdate={setIsUpdate}
               open={open}
               setOpen={setOpen}
               isUpdate={isUpdate}
-              categories={categories}
+              unit={units}
             />
           </DataTable>
         </>

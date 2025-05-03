@@ -24,61 +24,51 @@ import {
 } from "@/components/ui/form";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { PartialProductUnit } from "../types";
-import { useUnitMutations } from "../hooks/useVariantMutations";
-import { DEFAULT_FORM_PRODUCT_UNITS } from "../constants";
+
+import { useBaseUnitMutations } from "../hooks/useBaseUnitMutations";
+import { PartialProductBaseUnit } from "../types";
+import { DEFAULT_FORM_PRODUCT_BASE_UNITS } from "../constants";
 
 const formSchema = z.object({
   name: z.string().min(1, {
-    message: "Product Variant Name is required",
+    message: "Product Base Unit is required",
   }),
-  shortName: z.string().min(1, {
-    message: "Short Name is required",
-  }),
-  baseUnit: z.string().min(1, {
-    message: "Base Unit is required",
-  }),
-  status: z.boolean().default(true).optional(),
 });
 
 type DialogProps = {
   isUpdate: boolean;
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
-  unit: PartialProductUnit;
+  baseUnit: PartialProductBaseUnit;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 };
 
-const UnitForm = ({
+const BaseUnitForm = ({
   isUpdate,
-  unit,
+  baseUnit,
   setOpen,
   open,
   setIsUpdate,
 }: DialogProps) => {
   const queryClient = useQueryClient();
-  const { insertUnit, updateUnit } = useUnitMutations({
+  const { insertBaseUnit, updateBaseUnit } = useBaseUnitMutations({
     queryClient,
   });
 
-  const { mutateAsync: add, isPending: addIsPending } = insertUnit;
-  const { mutateAsync: update, isPending: updateIsPending } = updateUnit;
+  const { mutateAsync: add, isPending: addIsPending } = insertBaseUnit;
+  const { mutateAsync: update, isPending: updateIsPending } = updateBaseUnit;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      name: unit.name,
-      shortName: unit.name,
-      baseUnit: unit.baseUnit,
-      status: unit.status,
+      name: baseUnit.name,
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (isUpdate) {
-      await update({ ...data, id: unit.id });
+      await update({ ...data, id: baseUnit.id });
       resetForm(false);
     } else {
       await add(data);
@@ -87,7 +77,7 @@ const UnitForm = ({
   };
 
   const resetForm = (isOpen: boolean) => {
-    form.reset(DEFAULT_FORM_PRODUCT_UNITS);
+    form.reset(DEFAULT_FORM_PRODUCT_BASE_UNITS);
     setIsUpdate(false);
     setOpen(isOpen);
   };
@@ -106,7 +96,7 @@ const UnitForm = ({
         </Button>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Product Unit</DialogTitle>
+            <DialogTitle>Product Base Unit</DialogTitle>
             <DialogDescription>Please enter Variant Type</DialogDescription>
           </DialogHeader>
           <Separator />
@@ -118,67 +108,14 @@ const UnitForm = ({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Unit Name</FormLabel>
+                      <FormLabel>Base Unit Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter Unit Name" {...field} />
+                        <Input placeholder="Enter Base Unit Name" {...field} />
                       </FormControl>
                       <FormMessage></FormMessage>
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="shortName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Short Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter Short Name"
-                          {...field}
-                          required
-                        />
-                      </FormControl>
-                      <FormMessage></FormMessage>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="baseUnit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Base Unit</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter Base Unit"
-                          {...field}
-                          required
-                        />
-                      </FormControl>
-                      <FormMessage></FormMessage>
-                    </FormItem>
-                  )}
-                />
-
-                {isUpdate && (
-                  <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <FormLabel>Status</FormLabel>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                )}
               </div>
               <Separator className="my-3" />
               <DialogFooter>
@@ -210,4 +147,4 @@ const UnitForm = ({
   );
 };
 
-export default UnitForm;
+export default BaseUnitForm;

@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { getVariants } from "../services";
+import { getUnits } from "../services";
 
 
+export const useUnitQueries = () => {
 
-export const useVariantQueries = () => {
-
-    const getAllVariant = useQuery({
-        queryKey: ['variant'],
-        queryFn: getVariants,
+    const getAllUnit = useQuery({
+        queryKey: ['unit'],
+        queryFn: getUnits,
         retry: 1,
     });
 
@@ -15,7 +14,7 @@ export const useVariantQueries = () => {
 
 
     return {
-        getAllVariant
+        getAllUnit
     }
 
 }
