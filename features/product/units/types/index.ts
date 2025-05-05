@@ -4,6 +4,8 @@ export type ProductUnit = {
     name: string;
     shortName: string;
     baseUnit: string;
+    operator:string;
+    operationValue:number;
     status?: boolean
 }
 

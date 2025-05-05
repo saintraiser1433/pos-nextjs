@@ -3,6 +3,8 @@ export const DEFAULT_FORM_PRODUCT_UNITS = {
     name: '',
     shortName: '',
     baseUnit: '',
+    operator: '',
+    operationValue: 0,
     status: true,
 };
 

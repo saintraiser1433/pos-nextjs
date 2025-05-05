@@ -39,27 +39,10 @@ export const useBrandMutations = ({ queryClient }: MutationProps) => {
     const insertProductBrand = useMutation<
         ApiResponse<ProductBrand>,
         Error,
-        Pick<ProductBrand, 'name' | 'status'>,
-        {
-            previousBrand?: Pick<ProductBrand, 'name' | 'status'>[];
-        }
+        FormData
     >({
         mutationFn: insertBrand,
-        onMutate: async (newBrand) => {
-            await queryClient.cancelQueries({ queryKey: ['brand'] });
-            const previousBrand = queryClient.getQueryData<
-                Pick<ProductBrand, 'name' | 'status'>[]
-            >(['brand']);
-            queryClient.setQueryData<Pick<ProductBrand, 'name' | 'status'>[]>(
-                ['brand'],
-                (old = []) => [newBrand, ...old]
-            );
-            return { previousBrand };
-        },
         onError: (error, _, context) => {
-            if (context?.previousBrand) {
-                queryClient.setQueryData(['brand'], context.previousBrand);
-            }
             toast('error', error.message)
         },
         onSuccess: (response) => {
@@ -73,38 +56,11 @@ export const useBrandMutations = ({ queryClient }: MutationProps) => {
     const updateProductBrand = useMutation<
         ApiResponse<ProductBrand>,
         Error,
-        Pick<ProductBrand, 'id' | 'name' | 'status'>,
-        {
-            previousBrand?: ProductBrand;
-            newBrand: Omit<ProductBrand, 'createdAt'>;
-        }
+        FormData
     >({
         mutationFn: updateBrand,
-        onMutate: async (newBrand) => {
-            await queryClient.cancelQueries({
-                queryKey: ['brand', newBrand.id],
-            });
 
-            const previousBrand = queryClient.getQueryData<ProductBrand>([
-                'brand',
-                newBrand.id,
-            ]);
-
-            queryClient.setQueryData<ProductBrand[]>(['brand'], (old) =>
-                old?.map((cat) =>
-                    cat.id === newBrand.id ? { ...cat, ...newBrand } : cat
-                )
-            );
-
-            return { previousBrand, newBrand };
-        },
         onError: (error, _, context) => {
-            if (context?.previousBrand) {
-                queryClient.setQueryData(
-                    ['brand', context.newBrand.id],
-                    context.previousBrand
-                );
-            }
             toast('error', error.message)
         },
         onSuccess: (response) => {

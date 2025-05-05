@@ -33,13 +33,13 @@ export function ComboBox({ items }: ItemsProps) {
   const [value, setValue] = React.useState('');
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover  open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant='outline'
           role='combobox'
           aria-expanded={open}
-          className='w-full justify-between'
+          className='justify-between max-w-full'
         >
           {value
             ? items.find((items) => items.value === value)?.label
@@ -47,9 +47,9 @@ export function ComboBox({ items }: ItemsProps) {
           <ChevronsUpDown className='opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-full p-0'>
+      <PopoverContent className='p-0 w-(--radix-popover-trigger-width)'>
         <Command>
-          <CommandInput placeholder='Search items...' className='h-9' />
+          <CommandInput placeholder='Search items...' className='h-9 w-full' />
           <CommandList>
             <CommandEmpty>No items found.</CommandEmpty>
             <CommandGroup>

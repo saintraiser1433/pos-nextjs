@@ -38,12 +38,22 @@ export const getBrandColumns = (
     enableHiding: false,
   },
   {
-    accessorKey: '#',
+    accessorKey: 'brandImage',
+    header: 'Brand Image',
     cell: ({ row }) => <span>{row.index + 1}</span>,
   },
+
   {
     accessorKey: 'name',
-    header: 'Name',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Brand Name' />
+    ),
+  },
+  {
+    accessorKey: 'description',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Brand Description' />
+    ),
   },
   {
     accessorKey: 'status',
@@ -70,12 +80,7 @@ export const getBrandColumns = (
             label: 'Edit Brand',
             icon: FileText,
             onClick: (category) => {
-              setIsUpdate(true),
-                setBrand({
-                  id: category.id,
-                  name: category.name,
-                  status: category.status,
-                });
+              setIsUpdate(true), setBrand(category);
               setOpen(true);
             },
           },

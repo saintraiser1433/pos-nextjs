@@ -15,19 +15,19 @@ export const getBrand = async (): Promise<ProductBrand[]> => {
 
 
 export const insertBrand = async (
-    data: Pick<ProductBrand, "name" | "status">
+    data: FormData
 ): Promise<ApiResponse<ProductBrand>> => {  // Explicit return type
     try {
         const response = await api.post<ApiResponse<ProductBrand>>("/product/brand", data);
         return response.data;
-    } catch (error: any) {      
+    } catch (error: any) {
         throw error.response?.data || error.message;
     }
 };
 
 
 export const updateBrand = async (
-    data: Pick<ProductBrand, "id" | "name" | "status">,
+    data: FormData,
 ): Promise<ApiResponse<ProductBrand>> => {  // Explicit return type
     try {
         const response = await api.put<ApiResponse<ProductBrand>>(`/product/brand`, data);

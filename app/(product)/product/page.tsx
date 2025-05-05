@@ -6,6 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Box } from 'lucide-react';
 import Link from 'next/link';
 
+type Payment = {
+  id: string;
+  amount: number;
+  status: string;
+  email: string;
+};
+
 async function getData(): Promise<Payment[]> {
   return [
     {
@@ -53,5 +60,4 @@ const Product = async () => {
   );
 };
 
-
-export default Product
+export default Product;
