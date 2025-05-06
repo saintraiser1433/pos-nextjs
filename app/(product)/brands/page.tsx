@@ -73,6 +73,7 @@ const ProductBrand = () => {
         <h1>Loading....</h1>
       ) : (
         <>
+
           {brandToDelete && (
             <AlertDialogDemo
               open={openAlert}

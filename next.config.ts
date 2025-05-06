@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   devIndicators: {
     position: 'bottom-right'
   },
+  images: {
+    remotePatterns: [{
+      protocol: 'http',
+      hostname: 'localhost',
+      port: '3020',
+      pathname: '/storage/**'
+    }]
+  },
 
   // Turbopack configuration
   turbopack: {

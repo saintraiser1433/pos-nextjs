@@ -2,12 +2,20 @@
 
 import { DataTableColumnHeader } from '@/components/datatable/dt-column-header';
 import { ColumnDef } from '@tanstack/react-table';
-import { FileText, Trash2 } from 'lucide-react';
+import { FileText, ImageOff, ImagePlus, Trash2 } from 'lucide-react';
 import { DataTableActions } from '@/components/datatable/dt-column-action';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { PartialProductBrand, ProductBrand } from '../types';
+import Image from 'next/image';
 
+import { ImageLoaderProps } from 'next/image';
+import { cn } from '@/lib/utils';
+
+const imageLoader = ({ src, width, quality }: ImageLoaderProps) => {
+  return `${process.env.NEXT_PUBLIC_STORAGE_BRAND}/${src}?w=${width}&q=${
+    quality || 75
+  }`;
+};
 export const getBrandColumns = (
   setBrandToDelete: React.Dispatch<React.SetStateAction<ProductBrand | null>>,
   setBrand: React.Dispatch<React.SetStateAction<PartialProductBrand>>,
@@ -16,31 +24,25 @@ export const getBrandColumns = (
   setOpenAlert: React.Dispatch<React.SetStateAction<boolean>>
 ): ColumnDef<ProductBrand>[] => [
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: 'brandImage',
     header: 'Brand Image',
-    cell: ({ row }) => <span>{row.index + 1}</span>,
+    cell: ({ row }) => {
+      const image = row.getValue('brandImage');
+      return image ? (
+        <Image
+          loader={imageLoader}
+          loading='lazy'
+          style={{ objectFit: 'contain' }}
+          className='rounded-md ml-4'
+          src={`${row.getValue('brandImage')}`}
+          width={32}
+          height={32}
+          alt='Picture of the author'
+        />
+      ) : (
+        <ImageOff className={cn('ml-4 text-gray-500')} />
+      );
+    },
   },
 
   {
@@ -79,8 +81,9 @@ export const getBrandColumns = (
           {
             label: 'Edit Brand',
             icon: FileText,
-            onClick: (category) => {
-              setIsUpdate(true), setBrand(category);
+            onClick: (brand) => {
+              setIsUpdate(true);
+              setBrand(brand);
               setOpen(true);
             },
           },

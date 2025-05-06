@@ -18,7 +18,11 @@ export const insertBrand = async (
     data: FormData
 ): Promise<ApiResponse<ProductBrand>> => {  // Explicit return type
     try {
-        const response = await api.post<ApiResponse<ProductBrand>>("/product/brand", data);
+        const response = await api.post<ApiResponse<ProductBrand>>("/product/brand", data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data;
     } catch (error: any) {
         throw error.response?.data || error.message;
@@ -30,7 +34,11 @@ export const updateBrand = async (
     data: FormData,
 ): Promise<ApiResponse<ProductBrand>> => {  // Explicit return type
     try {
-        const response = await api.put<ApiResponse<ProductBrand>>(`/product/brand`, data);
+        const response = await api.put<ApiResponse<ProductBrand>>(`/product/brand`, data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data;
     } catch (error: any) {  // Type assertion for error
         throw error.response?.data || error.message;

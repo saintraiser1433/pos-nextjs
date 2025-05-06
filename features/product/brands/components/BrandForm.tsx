@@ -12,7 +12,7 @@ import {
 import { useDropzone } from 'react-dropzone';
 import { Input } from '@/components/ui/input';
 import { Box, ImagePlus, Loader2 } from 'lucide-react';
-import { z } from 'zod';
+import { string, z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -34,6 +34,28 @@ import { DEFAULT_FORM_PRODUCT_BRAND } from '../constants';
 import { BrandFormProps, PartialProductBrand } from '../types';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { useOnDrop } from '@/hooks/useOnDrop';
+import { useImageDrop } from '@/hooks/useImageDrop';
+import { useFormReset } from '@/hooks/useFormReset';
+
+const formSchema = z.object({
+  brandImage: z
+    .union([
+      z.instanceof(File).refine((file) => file.size !== 0, {
+        message: 'Please upload a valid image',
+      }),
+      z.string().min(1, { message: 'Image must not be empty' }),
+    ])
+    .optional(), 
+  name: z.string().min(3, {
+    message: 'Product Brand must be at least 3 characters.',
+  }),
+
+  description: z.string().min(5, {
+    message: 'Description be at least 5 characters.',
+  }),
+  status: z.boolean().default(true).optional(),
+});
 
 const BrandForm = ({
   isUpdate,
@@ -43,86 +65,52 @@ const BrandForm = ({
   setIsUpdate,
 }: BrandFormProps) => {
   const queryClient = useQueryClient();
-  const [preview, setPreview] = React.useState<string | ArrayBuffer | null>('');
   const { insertProductBrand, updateProductBrand } = useBrandMutations({
     queryClient,
   });
-
   const { mutateAsync: add, isPending: addIsPending } = insertProductBrand;
   const { mutateAsync: update, isPending: updateIsPending } =
     updateProductBrand;
 
-  const formSchema = z.object({
-    brandImage: z
-      .instanceof(File)
-      .refine((file) => file.size !== 0, 'Please upload an image'),
-    name: z.string().min(3, {
-      message: 'Product Brand must be at least 3 characters.',
-    }),
-
-    description: z.string().min(5, {
-      message: 'Description be at least 5 characters.',
-    }),
-    status: z.boolean().default(true).optional(),
-  });
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: 'onBlur',
-    defaultValues: {
-      brandImage: new File([''], 'filename'),
+    values: {
+      brandImage: brand.brandImage,
       name: brand.name,
       description: brand.description,
       status: brand.status,
     },
   });
 
-  const onDrop = React.useCallback(
-    (acceptedFiles: File[]) => {
-      const reader = new FileReader();
-      try {
-        reader.onload = () => setPreview(reader.result);
-        reader.readAsDataURL(acceptedFiles[0]);
-        form.setValue('brandImage', acceptedFiles[0]);
-        form.clearErrors('brandImage');
-      } catch (error) {
-        setPreview(null);
-        form.resetField('brandImage');
-      }
-    },
-    [form]
+  const { preview, setPreview, onDrop } = useImageDrop(
+    'brandImage',
+    form.setValue,
+    form.resetField
   );
-
   const { getRootProps, getInputProps, isDragActive, fileRejections } =
-    useDropzone({
-      onDrop,
-      maxFiles: 1,
-      maxSize: 1000000,
-      accept: { 'image/png': [], 'image/jpg': [], 'image/jpeg': [] },
-    });
+    useOnDrop(onDrop);
 
-  const resetForm = (isOpen: boolean) => {
-    form.reset(DEFAULT_FORM_PRODUCT_BRAND);
-    setPreview(null);
-    setIsUpdate(false);
-    setOpen(isOpen);
-  };
+  const { resetForm } = useFormReset(
+    form.reset,
+    DEFAULT_FORM_PRODUCT_BRAND,
+    setPreview,
+    setIsUpdate,
+    setOpen
+  );
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const formData = new FormData();
-    formData.append('brandImage', data.brandImage);
+    if (data.brandImage instanceof File) {
+      formData.append('brandImage', data.brandImage);
+    }
     formData.append('name', data.name);
     formData.append('description', data.description);
     formData.append('status', String(data.status ?? true));
+    if (isUpdate) formData.append('id', brand.id.toString());
 
-    if (isUpdate) {
-      formData.append('id', brand.id.toString());
-      await update(formData);
-      resetForm(false);
-    } else {
-      await add(formData);
-      resetForm(false);
-    }
+    await (isUpdate ? update(formData) : add(formData));
+    resetForm(false);
   };
 
   return (
@@ -149,7 +137,7 @@ const BrandForm = ({
                 <FormField
                   control={form.control}
                   name='brandImage'
-                  render={() => (
+                  render={({ field }) => (
                     <FormItem className='mx-auto sm:w-[300px]'>
                       <FormControl>
                         <div
@@ -158,18 +146,29 @@ const BrandForm = ({
                             'mx-auto flex cursor-pointer flex-col items-center justify-center gap-y-2 rounded-lg border border-foreground p-2  shadow-foreground'
                           )}
                         >
-                          {preview && (
+                          {preview ? (
                             <img
                               src={preview as string}
                               alt='Uploaded image'
                               className='max-h-[300px] rounded-lg'
                             />
+                          ) : (
+                            field.value &&
+                            typeof field.value === 'string' && (
+                              <img
+                                src={`${process.env.NEXT_PUBLIC_STORAGE_BRAND}/${field.value}`}
+                                alt='Uploaded images'
+                                className='max-h-[300px] rounded-lg'
+                              />
+                            )
                           )}
+
                           <ImagePlus
                             className={`size-30 text-gray-500 ${
-                              preview ? 'hidden' : 'block'
+                              preview || field.value ? 'hidden' : 'block'
                             }`}
                           />
+
                           <Input {...getInputProps()} type='file' />
                           {isDragActive ? (
                             <p>Drop the image!</p>

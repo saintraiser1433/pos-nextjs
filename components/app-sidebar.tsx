@@ -92,30 +92,37 @@ const data = {
         {
           title: 'Products',
           url: '/product',
+          prefetch:false
         },
         {
           title: 'Categories',
           url: '/categories',
+          prefetch:false
         },
         {
           title: 'Variations',
           url: '/variations',
+          prefetch:false
         },
         {
           title: 'Brands',
           url: '/brands',
+          prefetch:false
         },
         {
           title: 'Units',
           url: '/units',
+          prefetch:false
         },
         {
           title: 'Base Units',
           url: '/base-units',
+          prefetch:false
         },
         {
           title: 'Print Barcode',
           url: '/barcode',
+          prefetch:false
         },
       ],
     },
