@@ -6,8 +6,8 @@ import { AlertDialogDemo } from "@/components/alert-dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/useToast";
 import { useGlobal } from "@/context/GlobalProvider";
-import { useUnitMutations } from "@/features/product/units/hooks/useVariantMutations";
-import { useUnitQueries } from "@/features/product/units/hooks/useVariantQueries";
+import { useUnitMutations } from "@/features/product/units/hooks/useUnitMutations";
+import { useUnitQueries } from "@/features/product/units/hooks/useUnitQueries";
 import { DEFAULT_FORM_PRODUCT_BASE_UNITS } from "@/features/product/base-units/constants";
 import {
   PartialProductBaseUnit,

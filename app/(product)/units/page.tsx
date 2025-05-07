@@ -16,8 +16,8 @@ import {
 import { DEFAULT_FORM_PRODUCT_UNITS } from "@/features/product/units/constants";
 import { getUnitsColumns } from "@/features/product/units/components/UnitsColumn";
 import UnitForm from "@/features/product/units/components/UnitsForm";
-import { useUnitMutations } from "@/features/product/units/hooks/useVariantMutations";
-import { useUnitQueries } from "@/features/product/units/hooks/useVariantQueries";
+import { useUnitMutations } from "@/features/product/units/hooks/useUnitMutations";
+import { useUnitQueries } from "@/features/product/units/hooks/useUnitQueries";
 
 const ProductUnits = () => {
   const [isUpdate, setIsUpdate] = useState(false);

@@ -15,6 +15,21 @@ export const getUnits = async (): Promise<ProductUnit[]> => {
 };
 
 
+export const getUnitsById = async ({ queryKey }: { queryKey: [string, { unitId: number }] }): Promise<ProductUnit[]> => {
+    try {
+        const [_key, { unitId }] = queryKey;  // Destructure the array
+        const { data } = await api.get<ProductUnit[]>(`/product/unit`, {
+            params: {
+                unitId
+            }
+        });
+        return data;
+    } catch (err: any) {
+        throw err;
+    }
+};
+
+
 export const addUnits = async (
     data: Pick<ProductUnit, "name" | "shortName" | "baseUnit">
 ): Promise<ApiResponse<ProductUnit>> => {  // Explicit return type

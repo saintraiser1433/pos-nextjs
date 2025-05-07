@@ -21,6 +21,7 @@ import {
 
 type ItemsProps = {
   items: Item[];
+  placeholder?: string;
 };
 
 type Item = {
@@ -28,7 +29,7 @@ type Item = {
   label: string;
 };
 
-export function ComboBox({ items }: ItemsProps) {
+export function ComboBox({ items,placeholder = 'Select items...' }: ItemsProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
 
@@ -43,7 +44,7 @@ export function ComboBox({ items }: ItemsProps) {
         >
           {value
             ? items.find((items) => items.value === value)?.label
-            : 'Select items...'}
+            : placeholder}
           <ChevronsUpDown className='opacity-50' />
         </Button>
       </PopoverTrigger>

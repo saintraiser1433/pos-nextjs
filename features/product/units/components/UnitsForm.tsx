@@ -27,7 +27,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { PartialProductUnit } from '../types';
-import { useUnitMutations } from '../hooks/useVariantMutations';
+import { useUnitMutations } from '../hooks/useUnitMutations';
 import { DEFAULT_FORM_PRODUCT_UNITS } from '../constants';
 import {
   Select,
