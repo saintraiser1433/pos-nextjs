@@ -45,8 +45,8 @@ const formSchema = z.object({
   shortName: z.string().min(1, {
     message: 'Short Name is required',
   }),
-  baseUnit: z.string().min(1, {
-    message: 'Base Unit is required',
+  baseUnitId: z.coerce.number({
+    required_error: 'Base Unit is required',
   }),
   operator: z.string().min(1, {
     message: 'Operator is required',
@@ -86,12 +86,12 @@ const UnitForm = ({
     values: unit,
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
     if (isUpdate) {
-      await update({ ...data, id: unit.id });
+      await update({ ...formData, id: unit.id });
       resetForm(false);
     } else {
-      await add(data);
+      await add(formData);
       resetForm(false);
     }
   };
@@ -156,13 +156,13 @@ const UnitForm = ({
 
                 <FormField
                   control={form.control}
-                  name='baseUnit'
+                  name='baseUnitId'
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Base Unit</FormLabel>
                       <FormControl>
                         <Select
-                          value={field.value}
+                          value={field.value?.toString()}
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger className='w-full'>
@@ -170,7 +170,10 @@ const UnitForm = ({
                           </SelectTrigger>
                           <SelectContent>
                             {data?.map((item) => (
-                              <SelectItem key={item.id} value={item.name}>
+                              <SelectItem
+                                key={item.id}
+                                value={item.id.toString()}
+                              >
                                 {item.name}
                               </SelectItem>
                             ))}

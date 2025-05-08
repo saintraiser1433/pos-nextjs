@@ -10,8 +10,8 @@ export const useUnitQueries = () => {
         retry: 1,
     });
 
-    const getUnitByBaseUnit = (unitId: number) => useQuery({
-        queryKey: ['baseUnit', { unitId }],
+    const getUnitByBaseUnit = (baseUnitId: number) => useQuery({
+        queryKey: ['baseUnit', { baseUnitId }],
         queryFn: getUnitsById,
         retry: 1,
     });

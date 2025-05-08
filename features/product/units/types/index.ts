@@ -3,7 +3,7 @@ export type ProductUnit = {
     createdAt: Date,
     name: string;
     shortName: string;
-    baseUnit: string;
+    baseUnitId: number;
     operator:string;
     operationValue:number;
     status?: boolean

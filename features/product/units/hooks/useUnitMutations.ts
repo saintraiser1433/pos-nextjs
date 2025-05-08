@@ -43,18 +43,18 @@ export const useUnitMutations = ({ queryClient }: MutationProps) => {
     const insertUnit = useMutation<
         ApiResponse<ProductUnit>,
         Error,
-        Pick<ProductUnit, "name" | "shortName" | "baseUnit">,
+        Pick<ProductUnit, "name" | "shortName" | "baseUnitId">,
         {
-            previousUnit?: Pick<ProductUnit, "name" | "shortName" | "baseUnit">[];
+            previousUnit?: Pick<ProductUnit, "name" | "shortName" | "baseUnitId">[];
         }
     >({
         mutationFn: addUnits,
         onMutate: async (newUnit) => {
             await queryClient.cancelQueries({ queryKey: ['unit'] });
             const previousUnit = queryClient.getQueryData<
-                Pick<ProductUnit, "name" | "shortName" | "baseUnit">[]
+                Pick<ProductUnit, "name" | "shortName" | "baseUnitId">[]
             >(['unit']);
-            queryClient.setQueryData<Pick<ProductUnit, "name" | "shortName" | "baseUnit">[]>(
+            queryClient.setQueryData<Pick<ProductUnit, "name" | "shortName" | "baseUnitId">[]>(
                 ['unit'],
                 (old = []) => [newUnit, ...old]
             );

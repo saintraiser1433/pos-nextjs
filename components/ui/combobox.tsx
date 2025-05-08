@@ -22,6 +22,7 @@ import {
 type ItemsProps = {
   items: Item[];
   placeholder?: string;
+  setBaseUnitId?: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
 type Item = {
@@ -29,12 +30,16 @@ type Item = {
   label: string;
 };
 
-export function ComboBox({ items,placeholder = 'Select items...' }: ItemsProps) {
+export function ComboBox({
+  items,
+  placeholder = 'Select items...',
+  setBaseUnitId,
+}: ItemsProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
 
   return (
-    <Popover  open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant='outline'
@@ -61,6 +66,7 @@ export function ComboBox({ items,placeholder = 'Select items...' }: ItemsProps) 
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? '' : currentValue);
                     setOpen(false);
+                    setBaseUnitId?.(parseInt(currentValue));
                   }}
                 >
                   {items.label}

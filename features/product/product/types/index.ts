@@ -1,3 +1,7 @@
+import { ProductCategory } from "@/types/products/categories";
+import { ProductBaseUnit } from "../../base-units/types";
+import { ProductUnit } from "../../units/types";
+
 export type ProductBrand = {
   id: number,
   createdAt: Date,
@@ -14,5 +18,20 @@ export type BrandFormProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 };
+
+export type ProductFormProps = {
+  categories: ProductCategory[] | undefined;
+  brand: ProductBrand[] | undefined;
+  baseUnit: ProductBaseUnit[] | undefined;
+  unit: ProductUnit[] | undefined;
+  baseUnitId: number | undefined;
+  setBaseUnitId: React.Dispatch<React.SetStateAction<number | undefined>>;
+};
+
+export type ImageDropProps = {
+  preview: string | null;
+  setPreview: React.Dispatch<React.SetStateAction<string | ArrayBuffer | null>>;
+  onDrop: (acceptedFiles: File[]) => void;
+}
 
 export type PartialProductBrand = Omit<ProductBrand, 'createdAt'> & Partial<Pick<ProductBrand, 'id'>>

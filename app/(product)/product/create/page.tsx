@@ -8,7 +8,7 @@ import { useUnitQueries } from '@/features/product/units/hooks/useUnitQueries';
 import { useState } from 'react';
 
 const CreateProduct = () => {
-  const [baseUnitId, setBaseUnitId] = useState<number>(0);
+  const [baseUnitId, setBaseUnitId] = useState<number | undefined>(undefined);
   const { getAllCategory } = useCategoryQueries();
   const { getAllBrand } = useBrandQueries();
   const { getAllBaseUnit } = useBaseUnitQueries();
@@ -20,13 +20,17 @@ const CreateProduct = () => {
   const { data: unit } = getUnitByBaseUnit(baseUnitId as number);
 
   return (
-    <ProductForm
-      setBaseUnitId={setBaseUnitId}
-      unit={unit}
-      baseUnit={baseUnit}
-      categories={category}
-      brand={brand}
-    />
+    <>
+
+      <ProductForm
+        baseUnitId={baseUnitId}
+        setBaseUnitId={setBaseUnitId}
+        unit={unit}
+        baseUnit={baseUnit}
+        categories={category}
+        brand={brand}
+      />
+    </>
   );
 };
 

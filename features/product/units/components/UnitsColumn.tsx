@@ -56,6 +56,10 @@ export const getUnitsColumns = (
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Base Unit' />
     ),
+    cell: ({ row }) => {
+      const baseUnit = row.getValue('baseUnit') as string;
+      return <Badge variant='outline'>{baseUnit}</Badge>;
+    },
   },
   {
     accessorKey: 'operator',
