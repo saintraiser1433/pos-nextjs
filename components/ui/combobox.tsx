@@ -18,6 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { useFormContext } from 'react-hook-form';
 
 type ItemsProps = {
   items: Item[];

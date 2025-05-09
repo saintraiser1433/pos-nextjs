@@ -39,6 +39,7 @@ const ProductType = ({
                     <ComboBox
                       placeholder='Select product type'
                       items={DEFAULT_PRODUCT_TYPE}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -93,6 +94,7 @@ const ProductType = ({
                           label: baseUnit.name.toLocaleUpperCase(),
                         })) || []
                       }
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -118,6 +120,7 @@ const ProductType = ({
                             }))
                           : []
                       }
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -143,6 +146,7 @@ const ProductType = ({
                             }))
                           : []
                       }
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -158,7 +162,11 @@ const ProductType = ({
                 <FormItem>
                   <FormLabel>Stock Alert</FormLabel>
                   <FormControl>
-                    <Input placeholder='Enter stock alert' {...field} />
+                    <Input
+                      type='number'
+                      placeholder='Enter stock alert'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

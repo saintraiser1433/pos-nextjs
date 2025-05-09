@@ -46,7 +46,7 @@ const ProductWarranty = () => {
                 <FormItem>
                   <FormLabel> Payment Type </FormLabel>
                   <FormControl>
-                    <ComboBox items={DEFAULT_PAYMENT_TYPE} />
+                    <ComboBox items={DEFAULT_PAYMENT_TYPE} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -65,6 +65,7 @@ const ProductWarranty = () => {
                       rows={10}
                       placeholder='Type your message here.'
                       id='message'
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

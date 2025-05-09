@@ -40,8 +40,26 @@ const ProductForm = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       productName: '',
+      barcode: '',
+      barcodeSymbology: undefined,
+      productCategory: undefined,
+      brand: undefined,
+      orderTax: 0,
+      taxType: undefined,
+      description: '',
+      productType: undefined,
+      saleUnit: undefined,
+      purchaseUnit: undefined,
+      stockAlert: 0,
+      productCost: 0,
+      productPrice: 0,
+      warrantyPeriod: 0,
+      paymentType:undefined,
+      warrantyTerms: '',
+      openingStock: 0,
       isGuarantee: false,
     },
+
   });
 
   const { preview, setPreview, onDrop } = useImageDrop(
@@ -49,6 +67,8 @@ const ProductForm = ({
     form.setValue,
     form.resetField
   );
+
+  
 
   // const { resetForm } = useFormReset(
   //   form.reset,
@@ -59,6 +79,7 @@ const ProductForm = ({
   // );
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    console.log('data', data);
     // const formData = new FormData();
     // if (data.brandImage instanceof File) {
     //   formData.append('brandImage', data.brandImage);

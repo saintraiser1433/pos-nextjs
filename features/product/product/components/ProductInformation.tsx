@@ -117,6 +117,7 @@ const ProductInformation = ({
                           label: category.name.toLocaleUpperCase(),
                         })) || []
                       }
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -140,6 +141,7 @@ const ProductInformation = ({
                           label: brand.name.toLocaleUpperCase(),
                         })) || []
                       }
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -186,6 +188,7 @@ const ProductInformation = ({
                     <ComboBox
                       placeholder='Select tax type'
                       items={DEFAULT_TAX_TYPE}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -205,6 +208,7 @@ const ProductInformation = ({
                       rows={10}
                       placeholder='Type your message here.'
                       id='message'
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
