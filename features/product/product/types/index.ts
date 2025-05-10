@@ -1,6 +1,7 @@
 import { ProductCategory } from "@/types/products/categories";
 import { ProductBaseUnit } from "../../base-units/types";
 import { ProductUnit } from "../../units/types";
+import { UseFormSetValue } from "react-hook-form";
 
 export type ProductBrand = {
   id: number,
@@ -27,6 +28,11 @@ export type ProductFormProps = {
   baseUnitId: number | undefined;
   setBaseUnitId: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
+
+
+export type SetValueProps = {
+  setValue: UseFormSetValue<any>
+}
 
 export type ImageDropProps = {
   preview: string | null;

@@ -54,12 +54,11 @@ const ProductForm = ({
       productCost: 0,
       productPrice: 0,
       warrantyPeriod: 0,
-      paymentType:undefined,
+      paymentType: undefined,
       warrantyTerms: '',
       openingStock: 0,
       isGuarantee: false,
     },
-
   });
 
   const { preview, setPreview, onDrop } = useImageDrop(
@@ -67,8 +66,6 @@ const ProductForm = ({
     form.setValue,
     form.resetField
   );
-
-  
 
   // const { resetForm } = useFormReset(
   //   form.reset,
@@ -105,8 +102,13 @@ const ProductForm = ({
               />
             </div>
             <div className='col-span-12 lg:col-span-10 flex flex-col gap-4'>
-              <ProductInformation brand={brand} categories={categories} />
+              <ProductInformation
+                setValue={form.setValue}
+                brand={brand}
+                categories={categories}
+              />
               <ProductType
+                setValue={form.setValue}
                 baseUnit={baseUnit}
                 unit={unit}
                 baseUnitId={baseUnitId}

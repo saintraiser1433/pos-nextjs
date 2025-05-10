@@ -9,16 +9,22 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import React from 'react';
-import { DEFAULT_PRODUCT_TYPE } from '../constants';
 import { useFormContext } from 'react-hook-form';
-import { ProductFormProps } from '../types';
+import { ProductFormProps, SetValueProps } from '../types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Check, ChevronsUpDown } from 'lucide-react';
 
 const ProductType = ({
   baseUnit = [],
   unit = [],
   baseUnitId,
   setBaseUnitId,
-}: Omit<ProductFormProps, 'categories' | 'brand'>) => {
+  setValue
+}: Omit<ProductFormProps & SetValueProps, 'categories' | 'brand'>) => {
   const { control } = useFormContext();
 
   return (
@@ -33,14 +39,21 @@ const ProductType = ({
               control={control}
               name='productType'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='w-full'>
                   <FormLabel>Product Type</FormLabel>
                   <FormControl>
-                    <ComboBox
-                      placeholder='Select product type'
-                      items={DEFAULT_PRODUCT_TYPE}
-                      {...field}
-                    />
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className='w-full'>
+                        <SelectValue placeholder='Enter Product Type' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='Standard Product'>Standard Product</SelectItem>
+                        <SelectItem value='Variable Product'>Variable Product</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -78,51 +91,130 @@ const ProductType = ({
             />
           </div>
           <div className='col-span-12 md:col-span-4'>
-            <FormField
+          <FormField
               control={control}
               name='productUnit'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Product Unit</FormLabel>
-                  <FormControl>
-                    <ComboBox
-                      placeholder='Select product unit'
-                      setBaseUnitId={setBaseUnitId}
-                      items={
-                        baseUnit.map((baseUnit) => ({
-                          value: baseUnit.id.toString(),
-                          label: baseUnit.name.toLocaleUpperCase(),
-                        })) || []
-                      }
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel>Base Unit</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant='outline'
+                          role='combobox'
+                          className={cn(
+                            ' justify-between',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value
+                            ? baseUnit.find((item) => item.id === field.value)
+                                ?.name
+                            : 'Select Product Unit'}
+                          <ChevronsUpDown className='opacity-50' />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className=' p-0'>
+                      <Command>
+                        <CommandInput
+                          placeholder='Search framework...'
+                          className='h-9'
+                        />
+                        <CommandList>
+                          <CommandEmpty>No Product Unit Found.</CommandEmpty>
+                          <CommandGroup>
+                            {baseUnit.map((item) => (
+                              <CommandItem
+                                value={item.name}
+                                key={item.id}
+                                onSelect={() => {
+                                  setValue('brand', item.id);
+                                  setBaseUnitId(item.id);
+                                }}
+                              >
+                                {item.name}
+                                <Check
+                                  className={cn(
+                                    'ml-auto',
+                                    item.id === field.value
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
           <div className='col-span-12 md:col-span-4'>
-            <FormField
+          <FormField
               control={control}
-              name='saleUnit'
+              name='baseUnit'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Sale Unit</FormLabel>
-                  <FormControl>
-                    <ComboBox
-                      placeholder='Select sale unit'
-                      items={
-                        baseUnitId
-                          ? unit.map((unit) => ({
-                              value: unit.id.toString(),
-                              label: unit.name.toLocaleUpperCase(),
-                            }))
-                          : []
-                      }
-                      {...field}
-                    />
-                  </FormControl>
+                  <FormLabel>Base Unit</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant='outline'
+                          role='combobox'
+                          className={cn(
+                            ' justify-between',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value
+                            ? baseUnit.find((item) => item.id === field.value)
+                                ?.name
+                            : 'Select Brand'}
+                          <ChevronsUpDown className='opacity-50' />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className=' p-0'>
+                      <Command>
+                        <CommandInput
+                          placeholder='Search framework...'
+                          className='h-9'
+                        />
+                        <CommandList>
+                          <CommandEmpty>No Base Unit Found.</CommandEmpty>
+                          <CommandGroup>
+                            {baseUnit.map((item) => (
+                              <CommandItem
+                                value={item.name}
+                                key={item.id}
+                                onSelect={() => {
+                                  setValue('brand', item.id);
+                                  setBaseUnitId(item.id);
+                                }}
+                              >
+                                {item.name}
+                                <Check
+                                  className={cn(
+                                    'ml-auto',
+                                    item.id === field.value
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}

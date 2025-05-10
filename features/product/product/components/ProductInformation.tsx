@@ -7,15 +7,16 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
-import { BarcodeIcon, Percent } from 'lucide-react';
+import { BarcodeIcon, Check, ChevronsUpDown, Percent } from 'lucide-react';
 import React from 'react';
 import { DEFAULT_TAX_TYPE } from '../constants';
 import { useFormContext } from 'react-hook-form';
-import { ProductFormProps } from '../types';
+import { ProductFormProps, SetValueProps } from '../types';
 import {
   Select,
   SelectContent,
@@ -23,11 +24,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import { cn } from '@/lib/utils';
 
 const ProductInformation = ({
   brand = [],
   categories = [],
-}: Pick<ProductFormProps, 'brand' | 'categories'>) => {
+  setValue,
+}: Pick<
+  ProductFormProps & SetValueProps,
+  'brand' | 'categories' | 'setValue'
+>) => {
   const { control } = useFormContext();
   return (
     <Card>
@@ -86,13 +105,16 @@ const ProductInformation = ({
                 <FormItem className='w-full'>
                   <FormLabel>Barcode Symbology</FormLabel>
                   <FormControl>
-                    <Select {...field}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <SelectTrigger className='w-full'>
                         <SelectValue placeholder='Enter Barcode Symbology' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='light'>Code 128</SelectItem>
-                        <SelectItem value='dark'>Code 39</SelectItem>
+                        <SelectItem value='Code 128'>Code 128</SelectItem>
+                        <SelectItem value='Code 39'>Code 39</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -104,22 +126,63 @@ const ProductInformation = ({
           <div className='col-span-12 md:col-span-4'>
             <FormField
               control={control}
-              name='productCategory'
+              name='categoryId'
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product Category</FormLabel>
-                  <FormControl>
-                    <ComboBox
-                      placeholder='Select product category'
-                      items={
-                        categories.map((category) => ({
-                          value: category.id.toString(),
-                          label: category.name.toLocaleUpperCase(),
-                        })) || []
-                      }
-                      {...field}
-                    />
-                  </FormControl>
+                <FormItem className='flex flex-col'>
+                  <FormLabel>Product Type</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant='outline'
+                          role='combobox'
+                          className={cn(
+                            ' justify-between',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value
+                            ? categories.find(
+                                (category) => category.id === field.value
+                              )?.name
+                            : 'Select Category'}
+                          <ChevronsUpDown className='opacity-50' />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className=' p-0'>
+                      <Command>
+                        <CommandInput
+                          placeholder='Search category...'
+                          className='h-9'
+                        />
+                        <CommandList>
+                          <CommandEmpty>No Category Found.</CommandEmpty>
+                          <CommandGroup>
+                            {categories.map((cat) => (
+                              <CommandItem
+                                value={cat.name}
+                                key={cat.id}
+                                onSelect={() => {
+                                  setValue('categoryId', cat.id);
+                                }}
+                              >
+                                {cat.name}
+                                <Check
+                                  className={cn(
+                                    'ml-auto',
+                                    cat.id === field.value
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -132,18 +195,58 @@ const ProductInformation = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Brand Name</FormLabel>
-                  <FormControl>
-                    <ComboBox
-                      placeholder='Select brand name'
-                      items={
-                        brand.map((brand) => ({
-                          value: brand.id.toString(),
-                          label: brand.name.toLocaleUpperCase(),
-                        })) || []
-                      }
-                      {...field}
-                    />
-                  </FormControl>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant='outline'
+                          role='combobox'
+                          className={cn(
+                            ' justify-between',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value
+                            ? brand.find((brand) => brand.id === field.value)
+                                ?.name
+                            : 'Select Brand'}
+                          <ChevronsUpDown className='opacity-50' />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className=' p-0'>
+                      <Command>
+                        <CommandInput
+                          placeholder='Search framework...'
+                          className='h-9'
+                        />
+                        <CommandList>
+                          <CommandEmpty>No Brand Found.</CommandEmpty>
+                          <CommandGroup>
+                            {brand.map((brand) => (
+                              <CommandItem
+                                value={brand.name}
+                                key={brand.id}
+                                onSelect={() => {
+                                  setValue('brand', brand.id);
+                                }}
+                              >
+                                {brand.name}
+                                <Check
+                                  className={cn(
+                                    'ml-auto',
+                                    brand.id === field.value
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -178,18 +281,25 @@ const ProductInformation = ({
             />
           </div>
           <div className='col-span-12 md:col-span-2'>
-            <FormField
+          <FormField
               control={control}
               name='taxType'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='w-full'>
                   <FormLabel>Tax Type</FormLabel>
                   <FormControl>
-                    <ComboBox
-                      placeholder='Select tax type'
-                      items={DEFAULT_TAX_TYPE}
-                      {...field}
-                    />
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className='w-full'>
+                        <SelectValue placeholder='Enter Barcode Symbology' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='Exclusive'>Exclusive</SelectItem>
+                        <SelectItem value='Inclusive'>Inclusive</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
