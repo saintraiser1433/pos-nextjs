@@ -13,8 +13,14 @@ import React from 'react';
 import { DEFAULT_PAYMENT_TYPE } from '../constants';
 import { useFormContext } from 'react-hook-form';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ProductUnit } from '../../units/types';
+import { UseFormSetValue } from 'react-hook-form';
 
-const ProductWarranty = () => {
+type ProductWarrantyProps = {
+  setValue : UseFormSetValue<any>
+}
+
+const ProductWarranty = ({ setValue }: ProductWarrantyProps) => {
   const { control } = useFormContext();
   return (
     <Card>
@@ -46,7 +52,12 @@ const ProductWarranty = () => {
                 <FormItem>
                   <FormLabel> Payment Type </FormLabel>
                   <FormControl>
-                    <ComboBox items={DEFAULT_PAYMENT_TYPE} {...field} />
+                    <ComboBox
+                      field={field}
+                      setValue={setValue}
+                      columnField={'paymentType'}
+                      items={DEFAULT_PAYMENT_TYPE}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

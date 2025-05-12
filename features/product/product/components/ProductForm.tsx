@@ -18,6 +18,7 @@ import ProductType from './ProductType';
 import ProductWarranty from './ProductWarranty';
 import ProductUpload from './ProductUpload';
 
+
 const ProductForm = ({
   categories = [],
   brand = [],
@@ -42,41 +43,37 @@ const ProductForm = ({
       productName: '',
       barcode: '',
       barcodeSymbology: undefined,
-      productCategory: undefined,
-      brand: undefined,
-      orderTax: 0,
+      categoryId: 0,
+      brandId: 0,
+      orderTax: undefined,
       taxType: undefined,
       description: '',
       productType: undefined,
       saleUnit: undefined,
       purchaseUnit: undefined,
-      stockAlert: 0,
-      productCost: 0,
-      productPrice: 0,
-      warrantyPeriod: 0,
+      productUnit: undefined,
+      stockAlert: undefined,
+      productCost: undefined,
+      productPrice: undefined,
+      warrantyPeriod: undefined,
       paymentType: undefined,
       warrantyTerms: '',
-      openingStock: 0,
+      // openingStock: undefined,
       isGuarantee: false,
     },
   });
 
   const { preview, setPreview, onDrop } = useImageDrop(
-    'brandImage',
+    'productImage',
     form.setValue,
     form.resetField
   );
 
-  // const { resetForm } = useFormReset(
-  //   form.reset,
-  //   DEFAULT_FORM_PRODUCT_BRAND,
-  //   setPreview,
-  //   setIsUpdate,
-  //   setOpen
-  // );
+
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log('data', data);
+    
     // const formData = new FormData();
     // if (data.brandImage instanceof File) {
     //   formData.append('brandImage', data.brandImage);
@@ -114,7 +111,7 @@ const ProductForm = ({
                 baseUnitId={baseUnitId}
                 setBaseUnitId={setBaseUnitId}
               />
-              <ProductWarranty />
+              <ProductWarranty setValue={form.setValue} />
               <div className='flex gap-2 items-center'>
                 <Button variant='outline' type='submit'>
                   <SendHorizonal />

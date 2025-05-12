@@ -34,6 +34,8 @@ export type SetValueProps = {
   setValue: UseFormSetValue<any>
 }
 
+
+
 export type ImageDropProps = {
   preview: string | null;
   setPreview: React.Dispatch<React.SetStateAction<string | ArrayBuffer | null>>;
@@ -41,3 +43,5 @@ export type ImageDropProps = {
 }
 
 export type PartialProductBrand = Omit<ProductBrand, 'createdAt'> & Partial<Pick<ProductBrand, 'id'>>
+
+

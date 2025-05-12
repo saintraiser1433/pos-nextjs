@@ -38,6 +38,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
+import { ComboBoxItemProps } from '@/types';
 
 const ProductInformation = ({
   brand = [],
@@ -113,8 +114,8 @@ const ProductInformation = ({
                         <SelectValue placeholder='Enter Barcode Symbology' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='Code 128'>Code 128</SelectItem>
-                        <SelectItem value='Code 39'>Code 39</SelectItem>
+                        <SelectItem value='CODE128'>Code 128</SelectItem>
+                        <SelectItem value='CODE39'>Code 39</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -129,60 +130,19 @@ const ProductInformation = ({
               name='categoryId'
               render={({ field }) => (
                 <FormItem className='flex flex-col'>
-                  <FormLabel>Product Type</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant='outline'
-                          role='combobox'
-                          className={cn(
-                            ' justify-between',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          {field.value
-                            ? categories.find(
-                                (category) => category.id === field.value
-                              )?.name
-                            : 'Select Category'}
-                          <ChevronsUpDown className='opacity-50' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className=' p-0'>
-                      <Command>
-                        <CommandInput
-                          placeholder='Search category...'
-                          className='h-9'
-                        />
-                        <CommandList>
-                          <CommandEmpty>No Category Found.</CommandEmpty>
-                          <CommandGroup>
-                            {categories.map((cat) => (
-                              <CommandItem
-                                value={cat.name}
-                                key={cat.id}
-                                onSelect={() => {
-                                  setValue('categoryId', cat.id);
-                                }}
-                              >
-                                {cat.name}
-                                <Check
-                                  className={cn(
-                                    'ml-auto',
-                                    cat.id === field.value
-                                      ? 'opacity-100'
-                                      : 'opacity-0'
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <FormLabel>Product Category</FormLabel>
+                  <FormControl>
+                    <ComboBox
+                      field={field}
+                      setValue={setValue}
+                      columnField={'categoryId'}
+                      items={categories.map((category) => ({
+                        label: category.name,
+                        value: category.id.toString(),
+                      }))}
+                    />
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -191,62 +151,21 @@ const ProductInformation = ({
           <div className='col-span-12 md:col-span-4'>
             <FormField
               control={control}
-              name='brand'
+              name='brandId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Brand Name</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant='outline'
-                          role='combobox'
-                          className={cn(
-                            ' justify-between',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          {field.value
-                            ? brand.find((brand) => brand.id === field.value)
-                                ?.name
-                            : 'Select Brand'}
-                          <ChevronsUpDown className='opacity-50' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className=' p-0'>
-                      <Command>
-                        <CommandInput
-                          placeholder='Search framework...'
-                          className='h-9'
-                        />
-                        <CommandList>
-                          <CommandEmpty>No Brand Found.</CommandEmpty>
-                          <CommandGroup>
-                            {brand.map((brand) => (
-                              <CommandItem
-                                value={brand.name}
-                                key={brand.id}
-                                onSelect={() => {
-                                  setValue('brand', brand.id);
-                                }}
-                              >
-                                {brand.name}
-                                <Check
-                                  className={cn(
-                                    'ml-auto',
-                                    brand.id === field.value
-                                      ? 'opacity-100'
-                                      : 'opacity-0'
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <FormControl>
+                    <ComboBox
+                      field={field}
+                      setValue={setValue}
+                      columnField={'brandId'}
+                      items={brand.map((brand) => ({
+                        label: brand.name,
+                        value: brand.id.toString(),
+                      }))}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -281,7 +200,7 @@ const ProductInformation = ({
             />
           </div>
           <div className='col-span-12 md:col-span-2'>
-          <FormField
+            <FormField
               control={control}
               name='taxType'
               render={({ field }) => (
@@ -296,8 +215,8 @@ const ProductInformation = ({
                         <SelectValue placeholder='Enter Barcode Symbology' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='Exclusive'>Exclusive</SelectItem>
-                        <SelectItem value='Inclusive'>Inclusive</SelectItem>
+                        <SelectItem value='EXCLUSIVE'>Exclusive</SelectItem>
+                        <SelectItem value='INCLUSIVE'>Inclusive</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>

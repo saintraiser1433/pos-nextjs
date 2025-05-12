@@ -14,6 +14,7 @@ export const useUnitQueries = () => {
         queryKey: ['baseUnit', { baseUnitId }],
         queryFn: getUnitsById,
         retry: 1,
+        enabled: !!baseUnitId,
     });
 
 

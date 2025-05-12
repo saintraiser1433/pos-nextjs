@@ -21,7 +21,6 @@ const CreateProduct = () => {
 
   return (
     <>
-
       <ProductForm
         baseUnitId={baseUnitId}
         setBaseUnitId={setBaseUnitId}

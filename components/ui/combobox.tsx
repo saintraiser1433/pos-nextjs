@@ -18,27 +18,34 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useFormContext } from 'react-hook-form';
+import {
+  ControllerRenderProps,
+  FieldValues,
+  UseFormSetValue,
+  Path,
+} from 'react-hook-form';
+import { ComboBoxItemProps } from '@/types';
 
-type ItemsProps = {
-  items: Item[];
+type ItemsProps<TField extends FieldValues> = {
+  items: ComboBoxItemProps[];
   placeholder?: string;
+  columnField: Path<TField>; // This must match field.name
+  field: ControllerRenderProps<TField, Path<TField>>;
   setBaseUnitId?: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setValue: UseFormSetValue<TField>;
 };
 
-type Item = {
-  value: string;
-  label: string;
-};
 
-export function ComboBox({
+
+export function ComboBox<TField extends FieldValues>({
   items,
   placeholder = 'Select items...',
   setBaseUnitId,
-}: ItemsProps) {
+  setValue,
+  columnField,
+  field,
+}: ItemsProps<TField>) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -48,8 +55,8 @@ export function ComboBox({
           aria-expanded={open}
           className='justify-between max-w-full'
         >
-          {value
-            ? items.find((items) => items.value === value)?.label
+          {field.value
+            ? items.find((items) => items.value === field.value)?.label
             : placeholder}
           <ChevronsUpDown className='opacity-50' />
         </Button>
@@ -65,7 +72,7 @@ export function ComboBox({
                   key={items.value}
                   value={items.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? '' : currentValue);
+                    setValue(columnField, currentValue as any);
                     setOpen(false);
                     setBaseUnitId?.(parseInt(currentValue));
                   }}
@@ -74,7 +81,9 @@ export function ComboBox({
                   <Check
                     className={cn(
                       'ml-auto',
-                      value === items.value ? 'opacity-100' : 'opacity-0'
+                      field.value === items.value
+                        ? 'opacity-100'
+                        : 'opacity-0'
                     )}
                   />
                 </CommandItem>

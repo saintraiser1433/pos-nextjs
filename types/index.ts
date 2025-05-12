@@ -5,4 +5,9 @@ export type CustomNotificationProps = ToastContentProps<{
     content: string;
 }>;
 
+export type ComboBoxItemProps = {
+  value: string;
+  label: string;
+};
+
 export type Variant = "success" | "error" | "info" | "warning";
