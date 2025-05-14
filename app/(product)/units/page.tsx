@@ -1,23 +1,20 @@
-"use client";
+'use client';
 
-import { DataTable } from "@/components/datatable/data-table";
-import React, { useEffect, useState } from "react";
-import { AlertDialogDemo } from "@/components/alert-dialog";
-import { useCategoryMutations } from "@/features/product/categories/hooks/useCategoryMutations";
-import { useCategoryQueries } from "@/features/product/categories/hooks/useCategoryQueries";
-import { useQueryClient } from "@tanstack/react-query";
-import CategoryForm from "@/features/product/categories/components/CategoryForm";
-import { useToast } from "@/hooks/useToast";
-import { useGlobal } from "@/context/GlobalProvider";
+import { DataTable } from '@/components/datatable/data-table';
+import { useEffect, useState } from 'react';
+import { AlertDialogDemo } from '@/components/alert-dialog';
+import { useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/hooks/useToast';
+import { useGlobal } from '@/context/GlobalProvider';
 import {
   PartialProductUnit,
   ProductUnit,
-} from "@/features/product/units/types";
-import { DEFAULT_FORM_PRODUCT_UNITS } from "@/features/product/units/constants";
-import { getUnitsColumns } from "@/features/product/units/components/UnitsColumn";
-import UnitForm from "@/features/product/units/components/UnitsForm";
-import { useUnitMutations } from "@/features/product/units/hooks/useUnitMutations";
-import { useUnitQueries } from "@/features/product/units/hooks/useUnitQueries";
+} from '@/features/product/units/types';
+import { DEFAULT_FORM_PRODUCT_UNITS } from '@/features/product/units/constants';
+import { getUnitsColumns } from '@/features/product/units/components/UnitsColumn';
+import UnitForm from '@/features/product/units/components/UnitsForm';
+import { useUnitMutations } from '@/features/product/units/hooks/useUnitMutations';
+import { useUnitQueries } from '@/features/product/units/hooks/useUnitQueries';
 
 const ProductUnits = () => {
   const [isUpdate, setIsUpdate] = useState(false);
@@ -56,14 +53,14 @@ const ProductUnits = () => {
 
   useEffect(() => {
     if (isError) {
-      toast("error", error.message);
+      toast('error', error.message);
     }
   }, [isError, error]);
 
   useEffect(() => {
-    if (global.state?.title !== "Product Unit") {
+    if (global.state?.title !== 'Product Unit') {
       global.setState({
-        title: "Product Unit",
+        title: 'Product Unit',
       });
     }
   }, [global.state?.title]);

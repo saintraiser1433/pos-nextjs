@@ -10,7 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { ProductFormProps, SetValueProps } from '../types';
+import { ProductFormProps } from '../types';
 import {
   Select,
   SelectContent,
@@ -18,27 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { SetValueProps } from '@/types';
 
 const ProductType = ({
   baseUnit = [],
   unit = [],
-  baseUnitId,
   setBaseUnitId,
   setValue,
 }: Omit<ProductFormProps & SetValueProps, 'categories' | 'brand'>) => {
@@ -114,14 +98,14 @@ const ProductType = ({
           <div className='col-span-12 md:col-span-4'>
             <FormField
               control={control}
-              name='productUnit'
+              name='productUnitId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Product Unit</FormLabel>
                   <ComboBox
                     field={field}
                     setValue={setValue}
-                    columnField={'productUnit'}
+                    columnField={'productUnitId'}
                     setBaseUnitId={setBaseUnitId}
                     items={baseUnit.map((item) => ({
                       label: item.name,
@@ -136,14 +120,14 @@ const ProductType = ({
           <div className='col-span-12 md:col-span-4'>
             <FormField
               control={control}
-              name='saleUnit'
+              name='saleUnitId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Sale Unit</FormLabel>
                   <ComboBox
                     field={field}
                     setValue={setValue}
-                    columnField={'saleUnit'}
+                    columnField={'saleUnitId'}
                     items={unit.map((item) => ({
                       label: item.name,
                       value: item.id.toString(),
@@ -157,14 +141,14 @@ const ProductType = ({
           <div className='col-span-12 md:col-span-4'>
             <FormField
               control={control}
-              name='purchaseUnit'
+              name='purchaseUnitId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Purchase Unit</FormLabel>
                   <ComboBox
                     field={field}
                     setValue={setValue}
-                    columnField={'purchaseUnit'}
+                    columnField={'purchaseUnitId'}
                     items={unit.map((item) => ({
                       label: item.name,
                       value: item.id.toString(),

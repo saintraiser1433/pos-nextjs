@@ -12,13 +12,13 @@ export const formSchema = z.object({
     categoryId: z.coerce.number({
         required_error: 'Product Category is Required',
     }),
-    productName: z.string().min(2, {
+    name: z.string().min(2, {
         message: 'Product name must be at least 2 characters.',
     }),
     barcode: z.string({
         required_error: 'SKU Barcode is Required',
     }),
-    barcodeSymbology: z.enum(['CODE128', 'CODE39'], {
+    barcodeType: z.enum(['CODE128', 'CODE39'], {
         required_error: 'Barcode Symbology is Required',
     }),
     brandId: z.coerce.number({
@@ -42,15 +42,15 @@ export const formSchema = z.object({
         required_error: 'Product Price is Required',
         invalid_type_error: 'Product Price is Required',
     }),
-    productUnit: z.coerce.number({
+    productUnitId: z.coerce.number({
         required_error: 'Product Unit is Required',
         invalid_type_error: 'Product Unit is Required',
     }),
-    saleUnit: z.coerce.number({
+    saleUnitId: z.coerce.number({
         required_error: 'Sale Unit is Required',
         invalid_type_error: 'Sale Unit is Required',
     }),
-    purchaseUnit: z.coerce.number({
+    purchaseUnitId: z.coerce.number({
         required_error: 'Purchase Unit is Required',
         invalid_type_error: 'Purchase Unit is Required',
     }),
@@ -62,7 +62,7 @@ export const formSchema = z.object({
         required_error: 'Warranty Period is Required',
         invalid_type_error: 'Warranty Period is Required',
     }),
-    paymentType: z.enum(['Days', 'Years', 'Month'], {
+    warrantyPaymentType: z.enum(['DAYS', 'YEARS', 'MONTH'], {
         required_error: 'Payment Type is Required',
     }),
     warrantyTerms: z.string().min(5, {

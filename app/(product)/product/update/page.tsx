@@ -13,13 +13,12 @@ const CreateProduct = () => {
   const { getAllBrand } = useBrandQueries();
   const { getAllBaseUnit } = useBaseUnitQueries();
   const { getUnitByBaseUnit } = useUnitQueries();
+
   const { data: baseUnit } = getAllBaseUnit;
   const { data: brand } = getAllBrand;
   const { data: category } = getAllCategory;
   const { data: unit } = getUnitByBaseUnit(baseUnitId as number);
   
-
-
   return (
     <>
       <ProductForm

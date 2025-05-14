@@ -1,6 +1,6 @@
 export type ProductCategory = {
-    id:number,
-    createdAt:Date,
-    name:string;
-    status?:boolean
+    id: number,
+    createdAt: Date,
+    name: string,
+    status?: boolean
 }

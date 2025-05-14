@@ -8,16 +8,15 @@ import { Form } from '@/components/ui/form';
 
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { useBrandMutations } from '../hooks/useBrandMutations';
+import { useBrandMutations } from '../hooks/useProductMutations';
 import { useImageDrop } from '@/hooks/useImageDrop';
 import { useRouter } from 'next/navigation';
 import { formSchema } from '../schema';
-import { ProductFormProps } from '../types';
 import ProductInformation from './ProductInformation';
 import ProductType from './ProductType';
 import ProductWarranty from './ProductWarranty';
 import ProductUpload from './ProductUpload';
-
+import { ProductFormProps } from '../types';
 
 const ProductForm = ({
   categories = [],
@@ -26,38 +25,39 @@ const ProductForm = ({
   unit = [],
   baseUnitId,
   setBaseUnitId,
-}: ProductFormProps) => {
+  isUpdate = false,
+}: ProductFormProps & { isUpdate?: boolean }) => {
   const router = useRouter();
 
   const queryClient = useQueryClient();
-  const { insertProductBrand, updateProductBrand } = useBrandMutations({
+  const { insertProduct, updateProduct } = useBrandMutations({
     queryClient,
   });
-  const { mutateAsync: add, isPending: addIsPending } = insertProductBrand;
-  const { mutateAsync: update, isPending: updateIsPending } =
-    updateProductBrand;
+  const { mutateAsync: update } = updateProduct;
+  const { mutateAsync: add } = insertProduct;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      productName: '',
+      name: '',
       barcode: '',
-      barcodeSymbology: undefined,
+      barcodeType: undefined,
       categoryId: 0,
       brandId: 0,
-      orderTax: undefined,
+      orderTax: 0,
       taxType: undefined,
       description: '',
       productType: undefined,
-      saleUnit: undefined,
-      purchaseUnit: undefined,
-      productUnit: undefined,
-      stockAlert: undefined,
-      productCost: undefined,
-      productPrice: undefined,
-      warrantyPeriod: undefined,
-      paymentType: undefined,
+      saleUnitId: undefined,
+      purchaseUnitId: undefined,
+      productUnitId: undefined,
+      stockAlert: 0,
+      productCost: 0,
+      productPrice: 0,
+      warrantyPeriod: 0,
+      warrantyPaymentType: undefined,
       warrantyTerms: '',
+      productImage: undefined,
       // openingStock: undefined,
       isGuarantee: false,
     },
@@ -69,21 +69,27 @@ const ProductForm = ({
     form.resetField
   );
 
-
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log('data', data);
-    
-    // const formData = new FormData();
-    // if (data.brandImage instanceof File) {
-    //   formData.append('brandImage', data.brandImage);
-    // }
-    // formData.append('name', data.name);
-    // formData.append('description', data.description);
-    // formData.append('status', String(data.status ?? true));
-    // if (isUpdate) formData.append('id', brand.id.toString());
-    // await (isUpdate ? update(formData) : add(formData));
-    // resetForm(false);
+    console.log('me');
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else if (typeof value === 'object') {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, String(value));
+        }
+      }
+    });
+
+    if (isUpdate) {
+      update(formData);
+    }
+    add(formData);
+    // form.reset();
+    // setPreview(null);
   };
 
   return (

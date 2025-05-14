@@ -1,50 +1,29 @@
-'use server';
+'use client';
 
 import { DataTable } from '@/components/datatable/data-table';
-import { columns } from './column';
 import { Button } from '@/components/ui/button';
 import { Box } from 'lucide-react';
 import Link from 'next/link';
+import { useGlobal } from '@/context/GlobalProvider';
+import { useToast } from '@/hooks/useToast';
+import { useQueryClient } from '@tanstack/react-query';
+import { useUnitMutations } from '@/features/product/units/hooks/useUnitMutations';
+import { useProductQueries } from '@/features/product/product/hooks/useProductQueries';
+import { getProductColumns } from '@/features/product/product/components/ProductColumn';
+import { useState } from 'react';
 
-type Payment = {
-  id: string;
-  amount: number;
-  status: string;
-  email: string;
-};
+const Product = () => {
+  const [productDelete, setProductDelete] = useState<number | null>(null);
+  const global = useGlobal();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-async function getData(): Promise<Payment[]> {
-  return [
-    {
-      id: '728ed52f',
-      amount: 100,
-      status: 'pending',
-      email: 'm@example.com',
-    },
-    {
-      id: '12321',
-      amount: 100,
-      status: 'success',
-      email: 'm@example.com',
-    },
-    {
-      id: '728ed52f',
-      amount: 100,
-      status: 'processing',
-      email: '123@example.com',
-    },
-    {
-      id: '728ed52f',
-      amount: 100,
-      status: 'failed',
-      email: 'm@example.com',
-    },
-    // ...
-  ];
-}
-
-const Product = async () => {
-  const data = await getData();
+  const { deleteUnit } = useUnitMutations({
+    queryClient,
+  });
+  const { fetchProduct } = useProductQueries();
+  const { data = [], isLoading, isError, error } = fetchProduct;
+  const columns = getProductColumns();
 
   return (
     <div className=''>

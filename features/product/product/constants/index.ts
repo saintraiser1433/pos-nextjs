@@ -26,15 +26,15 @@ export const DEFAULT_PRODUCT_TYPE = [
 
 export const DEFAULT_PAYMENT_TYPE = [
     {
-        value: 'Month',
+        value: 'MONTH',
         label: 'Month',
     },
     {
-        value: 'Days',
+        value: 'DAYS',
         label: 'Days',
     },
     {
-        value: 'Years',
+        value: 'YEARS',
         label: 'Years',
     }
 ]

@@ -47,7 +47,7 @@ const ProductWarranty = ({ setValue }: ProductWarrantyProps) => {
           <div className='col-span-12 md:col-span-2'>
             <FormField
               control={control}
-              name='paymentType'
+              name='warrantyPaymentType'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel> Payment Type </FormLabel>
@@ -55,7 +55,7 @@ const ProductWarranty = ({ setValue }: ProductWarrantyProps) => {
                     <ComboBox
                       field={field}
                       setValue={setValue}
-                      columnField={'paymentType'}
+                      columnField={'warrantyPaymentType'}
                       items={DEFAULT_PAYMENT_TYPE}
                     />
                   </FormControl>

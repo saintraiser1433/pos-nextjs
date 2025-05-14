@@ -7,16 +7,12 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-
-import { BarcodeIcon, Check, ChevronsUpDown, Percent } from 'lucide-react';
-import React from 'react';
-import { DEFAULT_TAX_TYPE } from '../constants';
-import { useFormContext } from 'react-hook-form';
-import { ProductFormProps, SetValueProps } from '../types';
+import { BarcodeIcon, Percent } from 'lucide-react';
+import { useFormContext, UseFormSetValue } from 'react-hook-form';
+import { ProductFormProps } from '../types';
 import {
   Select,
   SelectContent,
@@ -24,30 +20,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import { cn } from '@/lib/utils';
-import { ComboBoxItemProps } from '@/types';
+
+type Val = {
+  setValue: UseFormSetValue<any>;
+};
 
 const ProductInformation = ({
   brand = [],
   categories = [],
   setValue,
-}: Pick<
-  ProductFormProps & SetValueProps,
-  'brand' | 'categories' | 'setValue'
->) => {
+}: Pick<ProductFormProps & Val, 'brand' | 'categories' | 'setValue'>) => {
   const { control } = useFormContext();
   return (
     <Card>
@@ -59,7 +41,7 @@ const ProductInformation = ({
           <div className='col-span-12 md:col-span-4'>
             <FormField
               control={control}
-              name='productName'
+              name='name'
               render={({ field }) => (
                 <FormItem className='w-full'>
                   <FormLabel>Product Name</FormLabel>
@@ -101,7 +83,7 @@ const ProductInformation = ({
           <div className='col-span-12 md:col-span-4'>
             <FormField
               control={control}
-              name='barcodeSymbology'
+              name='barcodeType'
               render={({ field }) => (
                 <FormItem className='w-full'>
                   <FormLabel>Barcode Symbology</FormLabel>
