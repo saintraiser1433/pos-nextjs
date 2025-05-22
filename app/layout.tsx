@@ -22,6 +22,9 @@ import { ToastContainer } from 'react-toastify';
 import QueryProvider from '@/context/QueryProvider';
 import { GlobalProvider, useGlobal } from '@/context/GlobalProvider';
 import PageHeader from '@/components/ui/page-header';
+import { AlertProvider } from '@/context/AlertProvider';
+import { AlertDialogComponent } from '@/components/alert-dialog';
+import { Providers } from '@/context/Provider';
 const archivoSans = Archivo({
   variable: '--font-archivo-sans-serif',
   subsets: ['latin'],
@@ -55,8 +58,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-
   return (
     <html lang='en' suppressHydrationWarning>
       <body>
@@ -93,10 +94,16 @@ export default function RootLayout({
                   </div>
                 </header>
                 <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>
-                  <GlobalProvider>
-                    <PageHeader />
-                    <QueryProvider>{children}</QueryProvider>
-                  </GlobalProvider>
+                  <AlertProvider>
+                  <Providers>
+                    <GlobalProvider>
+                      <PageHeader />
+                        {children}
+                      {/* <QueryProvider>{children}</QueryProvider> */}
+                      <AlertDialogComponent />
+                    </GlobalProvider>
+                    </Providers>
+                  </AlertProvider>
                 </div>
                 <ToastContainer />
               </SidebarInset>

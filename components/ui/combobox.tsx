@@ -56,7 +56,7 @@ export function ComboBox<TField extends FieldValues>({
           className='justify-between max-w-full'
         >
           {field.value
-            ? items.find((items) => items.value === field.value)?.label
+            ? items.find((items) => items.value === field.value.toString())?.label
             : placeholder}
           <ChevronsUpDown className='opacity-50' />
         </Button>

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllProduct } from "../services";
+import { getAllProduct, getProductById } from "../services";
 
 
 export const useProductQueries = () => {
@@ -7,10 +7,16 @@ export const useProductQueries = () => {
     const fetchProduct = useQuery({
         queryKey: ['product'],
         queryFn: getAllProduct,
-        retry: 1,
+    });
+
+    const fetchProductById = (productId: number) => useQuery({
+        queryKey: ['IProduct', productId],
+        queryFn: () => getProductById(productId),
+        staleTime: 0
     });
 
     return {
         fetchProduct,
+        fetchProductById
     };
 };

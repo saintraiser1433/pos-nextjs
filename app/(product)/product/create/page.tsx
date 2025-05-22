@@ -17,8 +17,6 @@ const CreateProduct = () => {
   const { data: brand } = getAllBrand;
   const { data: category } = getAllCategory;
   const { data: unit } = getUnitByBaseUnit(baseUnitId as number);
-  
-
 
   return (
     <>

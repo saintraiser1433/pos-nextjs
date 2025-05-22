@@ -8,7 +8,6 @@ export const useBaseUnitQueries = () => {
     const getAllBaseUnit = useQuery({
         queryKey: ['base-unit'],
         queryFn: getBaseUnits,
-        retry: 1,
     });
 
 

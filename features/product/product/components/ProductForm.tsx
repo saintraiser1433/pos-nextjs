@@ -5,10 +5,8 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
-
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { useBrandMutations } from '../hooks/useProductMutations';
 import { useImageDrop } from '@/hooks/useImageDrop';
 import { useRouter } from 'next/navigation';
 import { formSchema } from '../schema';
@@ -16,7 +14,10 @@ import ProductInformation from './ProductInformation';
 import ProductType from './ProductType';
 import ProductWarranty from './ProductWarranty';
 import ProductUpload from './ProductUpload';
-import { ProductFormProps } from '../types';
+import { Product, ProductFormProps } from '../types';
+import { useProductMutations } from '../hooks/useProductMutations';
+import { useEffect } from 'react';
+import { useFormData } from '@/hooks/useFormData';
 
 const ProductForm = ({
   categories = [],
@@ -26,19 +27,27 @@ const ProductForm = ({
   baseUnitId,
   setBaseUnitId,
   isUpdate = false,
-}: ProductFormProps & { isUpdate?: boolean }) => {
+  setData,
+  id,
+}: ProductFormProps & {
+  id?: number;
+  isUpdate?: boolean;
+  setData?: Product;
+}) => {
   const router = useRouter();
 
   const queryClient = useQueryClient();
-  const { insertProduct, updateProduct } = useBrandMutations({
+  const { insertProduct, updateProduct } = useProductMutations({
     queryClient,
   });
+  const { createFormData } = useFormData();
   const { mutateAsync: update } = updateProduct;
   const { mutateAsync: add } = insertProduct;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: 0,
       name: '',
       barcode: '',
       barcodeType: undefined,
@@ -46,7 +55,7 @@ const ProductForm = ({
       brandId: 0,
       orderTax: 0,
       taxType: undefined,
-      description: '',
+      description: undefined,
       productType: undefined,
       saleUnitId: undefined,
       purchaseUnitId: undefined,
@@ -59,7 +68,7 @@ const ProductForm = ({
       warrantyTerms: '',
       productImage: undefined,
       // openingStock: undefined,
-      isGuarantee: false,
+      isGuaranteed: false,
     },
   });
 
@@ -70,27 +79,19 @@ const ProductForm = ({
   );
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log('me');
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        if (value instanceof File) {
-          formData.append(key, value);
-        } else if (typeof value === 'object') {
-          formData.append(key, JSON.stringify(value));
-        } else {
-          formData.append(key, String(value));
-        }
-      }
-    });
-
+    const formData = createFormData(data);
     if (isUpdate) {
       update(formData);
+    } else {
+      add(formData);
     }
-    add(formData);
-    // form.reset();
-    // setPreview(null);
   };
+
+  useEffect(() => {
+    if (setData && Object.keys(setData).length > 0) {
+      form.reset({ ...setData, id });
+    }
+  }, [setData]);
 
   return (
     <>
@@ -111,11 +112,11 @@ const ProductForm = ({
                 categories={categories}
               />
               <ProductType
-                setValue={form.setValue}
                 baseUnit={baseUnit}
                 unit={unit}
-                baseUnitId={baseUnitId}
                 setBaseUnitId={setBaseUnitId}
+                setValue={form.setValue}
+                baseUnitId={baseUnitId}
               />
               <ProductWarranty setValue={form.setValue} />
               <div className='flex gap-2 items-center'>

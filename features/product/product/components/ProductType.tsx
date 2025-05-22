@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { ProductFormProps } from '../types';
 import {
@@ -26,8 +26,15 @@ const ProductType = ({
   setBaseUnitId,
   setValue,
 }: Omit<ProductFormProps & SetValueProps, 'categories' | 'brand'>) => {
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
+  const productUnitId = watch('productUnitId');
+  useEffect(() => {
+    if (productUnitId) {
+      setBaseUnitId(productUnitId);
+    }
+  }, [productUnitId, setBaseUnitId]);
 
+  
   return (
     <Card>
       <CardHeader className='border-b-1 pb-3'>
@@ -46,6 +53,7 @@ const ProductType = ({
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      value={field.value}
                     >
                       <SelectTrigger className='w-full'>
                         <SelectValue placeholder='Enter Product Type' />

@@ -2,6 +2,9 @@ import { ProductCategory } from "@/types/products/categories"
 import { ProductUnit } from "../../units/types"
 import { ProductBrand } from "../../brands/types"
 import { ProductBaseUnit } from "../../base-units/types"
+import { AlertContextType } from "@/types"
+import { UseMutateAsyncFunction } from "@tanstack/react-query"
+import { ApiResponse } from "@/types/products"
 
 enum BarcodeType {
   CODE39 = 'CODE39',
@@ -19,9 +22,9 @@ enum ProductType {
 }
 
 enum PaymentType {
-  DAYS = 'Days',
-  MONTHS = 'Months',
-  YEARS = 'Years',
+  DAYS = 'DAYS',
+  MONTHS = 'MONTHS',
+  YEARS = 'YEARS',
 }
 
 export type Product = {
@@ -33,6 +36,7 @@ export type Product = {
   brandId: number,
   orderTax: number,
   taxType: TaxType,
+  description: string,
   productImage?: string,
   productType: ProductType
   productCost: number,
@@ -43,11 +47,18 @@ export type Product = {
   stockAlert: number,
   warrantyPeriod: number,
   warrantyPaymentType: PaymentType,
-  warrantyTerms?: String
+  warrantyTerms?: string
   isGuaranteed?: boolean
   createdAt: Date
   updatedAt?: Date
   status?: boolean
+}
+
+export type ProductColumnProps = {
+  openAlert: AlertContextType['openAlert'],
+  deleteProduct: UseMutateAsyncFunction<ApiResponse<void>, Error, number, {
+    previousProduct: unknown;
+  }>
 }
 
 

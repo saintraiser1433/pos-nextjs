@@ -3,7 +3,7 @@ import { ApiResponse } from "@/types/products";
 import { useToast } from "@/hooks/useToast";
 
 import { Product } from "../types";
-import { createProduct, modifyProduct, removeProduct } from "../services";
+import { createProduct, deleteProduct, modifyProduct } from "../services";
 import { useRouter } from "next/navigation";
 
 
@@ -13,32 +13,10 @@ type MutationProps = {
 
 
 
-export const useBrandMutations = ({ queryClient }: MutationProps) => {
+export const useProductMutations = ({ queryClient }: MutationProps) => {
     const toast = useToast();
     const route = useRouter();
-    const deleteProduct = useMutation({
-        mutationFn: removeProduct,
-        onMutate: async (id) => {
-            await queryClient.cancelQueries({ queryKey: ['product'] });
-            const previousBrand = queryClient.getQueryData(['product']);
-            queryClient.setQueryData<Product[]>(['product'], (old) =>
-                old?.filter((item) => item.id !== id)
-            );
-            return { previousBrand };
-        },
-        onError: (error, _, context) => {
-            if (context?.previousBrand) {
-                queryClient.setQueryData(['product'], context.previousBrand);
-            }
-            toast('error', error.message)
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ['product'] });
-        },
-        onSuccess: (response) => {
-            toast('success', response.message)
-        },
-    });
+
 
     const insertProduct = useMutation<
         ApiResponse<Product>,
@@ -64,7 +42,6 @@ export const useBrandMutations = ({ queryClient }: MutationProps) => {
         FormData
     >({
         mutationFn: modifyProduct,
-
         onError: (error, _, context) => {
             toast('error', error.message)
         },
@@ -77,8 +54,32 @@ export const useBrandMutations = ({ queryClient }: MutationProps) => {
         },
     });
 
+    const removeProduct = useMutation({
+        mutationFn: deleteProduct,
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: ['product'] });
+            const previousProduct = queryClient.getQueryData(['product']);
+            queryClient.setQueryData<Product[]>(['product'], (old) =>
+                old?.filter((item) => item.id !== id)
+            );
+            return { previousProduct };
+        },
+        onError: (error, _, context) => {
+            if (context?.previousProduct) {
+                queryClient.setQueryData(['product'], context.previousProduct);
+            }
+            toast('error', error.message)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['product'] });
+        },
+        onSuccess: (response) => {
+            toast('success', response.message)
+        },
+    });
+
     return {
-        deleteProduct,
+        removeProduct,
         insertProduct,
         updateProduct
     };

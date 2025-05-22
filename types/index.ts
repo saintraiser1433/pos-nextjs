@@ -22,4 +22,17 @@ export type SetValueProps = {
   setValue: UseFormSetValue<any>
 }
 
+export type AlertContextType = {
+  open: boolean;
+  title?: string;
+  message?: string;
+  onConfirm: () => void;
+  openAlert: (options: {
+    message: string;
+    title?: string;
+    onConfirm: () => void;
+  }) => void;
+  closeAlert: () => void;
+};
+
 export type Variant = "success" | "error" | "info" | "warning";

@@ -1,3 +1,4 @@
+'use client'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,31 +10,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
 import { Separator } from './ui/separator';
+import { useAlert } from '@/context/AlertProvider';
 
-type AlertDialogProps = {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onConfirm: () => Promise<void>;
-  message: string;
-};
+export function AlertDialogComponent() {
+  const { open, title, message, onConfirm, closeAlert } = useAlert();
 
-export function AlertDialogDemo({
-  open,
-  setOpen,
-  message,
-  onConfirm,
-}: AlertDialogProps) {
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog open={open} onOpenChange={closeAlert}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{message}</AlertDialogDescription>
         </AlertDialogHeader>
-        <Separator orientation='horizontal'/>
+        <Separator orientation='horizontal' />
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>

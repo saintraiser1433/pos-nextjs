@@ -11,19 +11,27 @@ import { useUnitMutations } from '@/features/product/units/hooks/useUnitMutation
 import { useProductQueries } from '@/features/product/product/hooks/useProductQueries';
 import { getProductColumns } from '@/features/product/product/components/ProductColumn';
 import { useState } from 'react';
+import { useAlert } from '@/context/AlertProvider';
+import { useProductMutations } from '@/features/product/product/hooks/useProductMutations';
 
 const Product = () => {
+  const { openAlert } = useAlert();
   const [productDelete, setProductDelete] = useState<number | null>(null);
   const global = useGlobal();
   const toast = useToast();
   const queryClient = useQueryClient();
 
-  const { deleteUnit } = useUnitMutations({
+  const { removeProduct } = useProductMutations({
     queryClient,
   });
   const { fetchProduct } = useProductQueries();
   const { data = [], isLoading, isError, error } = fetchProduct;
-  const columns = getProductColumns();
+  const { mutateAsync: deleteProduct } = removeProduct;
+
+  const columns = getProductColumns({
+    openAlert,
+    deleteProduct,
+  });
 
   return (
     <div className=''>

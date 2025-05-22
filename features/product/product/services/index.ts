@@ -14,6 +14,16 @@ export const getAllProduct = async (): Promise<Product[]> => {
 
 };
 
+export const getProductById = async (id: number): Promise<Product> => {
+    try {
+        const { data } = await api.get<Product>(`/product/${id}`);
+        return data;
+    } catch (err: any) {
+        throw err;
+    }
+
+};
+
 
 export const createProduct = async (
     data: FormData
@@ -33,7 +43,7 @@ export const createProduct = async (
 
 export const modifyProduct = async (
     data: FormData,
-): Promise<ApiResponse<Product>> => {  
+): Promise<ApiResponse<Product>> => {
     try {
         const response = await api.put<ApiResponse<Product>>(`/product`, data, {
             headers: {
@@ -41,13 +51,13 @@ export const modifyProduct = async (
             },
         });
         return response.data;
-    } catch (error: any) {  
+    } catch (error: any) {
         throw error.response?.data || error.message;
     }
 };
 
 
-export const removeProduct = async (id: number): Promise<ApiResponse<void>> => {
+export const deleteProduct = async (id: number): Promise<ApiResponse<void>> => {
     try {
         const response = await api.delete<ApiResponse<void>>(`/product/${id}`);
         return response.data;

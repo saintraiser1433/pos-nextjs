@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const formSchema = z.object({
+    id: z.number().optional(),
     productImage: z
         .union([
             z.instanceof(File).refine((file) => file.size !== 0, {
@@ -62,12 +63,12 @@ export const formSchema = z.object({
         required_error: 'Warranty Period is Required',
         invalid_type_error: 'Warranty Period is Required',
     }),
-    warrantyPaymentType: z.enum(['DAYS', 'YEARS', 'MONTH'], {
+    warrantyPaymentType: z.enum(['DAYS', 'YEARS', 'MONTHS'], {
         required_error: 'Payment Type is Required',
     }),
     warrantyTerms: z.string().min(5, {
         message: 'Warranty Terms must be at least 5 characters.',
     }),
     // openingStock: z.coerce.number().optional(),
-    isGuarantee: z.boolean().default(false).optional(),
+    isGuaranteed: z.boolean().default(false).optional(),
 });

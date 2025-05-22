@@ -87,7 +87,7 @@ const ProductWarranty = ({ setValue }: ProductWarrantyProps) => {
           <div className='col-span-12'>
             <FormField
               control={control}
-              name='isGuarantee'
+              name='isGuaranteed'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow'>
                   <FormControl>

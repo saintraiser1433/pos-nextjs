@@ -8,7 +8,6 @@ export const useVariantQueries = () => {
     const getAllVariant = useQuery({
         queryKey: ['variant'],
         queryFn: getVariants,
-        retry: 1,
     });
 
 

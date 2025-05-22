@@ -3,7 +3,6 @@
 import { DataTable } from '@/components/datatable/data-table';
 import React, { useEffect, useState } from 'react';
 import { ProductCategory } from '@/types/products/categories';
-import { AlertDialogDemo } from '@/components/alert-dialog';
 import { getCategoryColumns } from '@/features/product/categories/components/CategoryColumn';
 import { useCategoryMutations } from '@/features/product/categories/hooks/useCategoryMutations';
 import { useCategoryQueries } from '@/features/product/categories/hooks/useCategoryQueries';
@@ -70,14 +69,6 @@ const ProductCategories = () => {
         <h1>Loading....</h1>
       ) : (
         <>
-          {categoryToDelete && (
-            <AlertDialogDemo
-              open={openAlert}
-              setOpen={setOpenAlert}
-              onConfirm={handleDelete}
-              message={`Are you sure you want to delete "${categoryToDelete.name}"?`}
-            />
-          )}
           <DataTable columns={columns} data={data ?? []}>
             <CategoryForm
               setIsUpdate={setIsUpdate}

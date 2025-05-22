@@ -86,11 +86,12 @@ const ProductInformation = ({
               name='barcodeType'
               render={({ field }) => (
                 <FormItem className='w-full'>
+        
                   <FormLabel>Barcode Symbology</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <SelectTrigger className='w-full'>
                         <SelectValue placeholder='Enter Barcode Symbology' />
@@ -192,6 +193,7 @@ const ProductInformation = ({
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      value={field.value}
                     >
                       <SelectTrigger className='w-full'>
                         <SelectValue placeholder='Enter Barcode Symbology' />

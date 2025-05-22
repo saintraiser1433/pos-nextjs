@@ -9,10 +9,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { useOnDrop } from '@/hooks/useOnDrop';
 import { cn } from '@/lib/utils';
+import { ImageDropProps } from '@/types';
 import { ImagePlus, ImageOff } from 'lucide-react';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { ImageDropProps } from '../types';
+
 
 const ProductUpload = ({ preview, setPreview, onDrop }: ImageDropProps) => {
   const { getRootProps, getInputProps, isDragActive, fileRejections } =
@@ -44,7 +45,7 @@ const ProductUpload = ({ preview, setPreview, onDrop }: ImageDropProps) => {
                     field.value &&
                     typeof field.value === 'string' && (
                       <img
-                        src={`${process.env.NEXT_PUBLIC_STORAGE_BRAND}/${field.value}`}
+                        src={`${process.env.NEXT_PUBLIC_STORAGE_PRODUCT}/${field.value}`}
                         alt='Uploaded images'
                         className='max-h-[300px] rounded-lg'
                       />

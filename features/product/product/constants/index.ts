@@ -26,7 +26,7 @@ export const DEFAULT_PRODUCT_TYPE = [
 
 export const DEFAULT_PAYMENT_TYPE = [
     {
-        value: 'MONTH',
+        value: 'MONTHS',
         label: 'Month',
     },
     {

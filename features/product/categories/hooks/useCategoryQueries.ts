@@ -7,7 +7,6 @@ export const useCategoryQueries = () => {
     const getAllCategory = useQuery({
         queryKey: ['categories'],
         queryFn: getCategories,
-        retry: 1,
     });
 
 
